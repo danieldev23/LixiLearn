@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# LixiLearn
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**LixiLearn** is a modern English learning app developed with **React Native**, designed to provide an engaging, interactive, and effective experience for language learners at all levels.
 
-## Get started
+## 🚀 Features
 
-1. Install dependencies
+- 🎯 **Personalized Learning Paths**  
+  Tailored lessons for beginners to advanced learners, covering vocabulary, grammar, listening, and speaking.
 
-   ```bash
-   npm install
-   ```
+- 🧠 **AI-Powered Smart Review**  
+  Adaptive review system based on spaced repetition to help learners retain vocabulary effectively.
 
-2. Start the app
+- 🎤 **Speaking Practice with Voice Recognition**  
+  Train your pronunciation using speech recognition and get instant feedback.
 
-   ```bash
-    npx expo start
-   ```
+- 🎧 **Interactive Listening Exercises**  
+  Practice listening skills through real-life conversations and audio clips.
 
-In the output, you'll find options to open the app in a
+- 📝 **Mini Quizzes & Challenges**  
+  Short, fun quizzes to reinforce what you’ve learned and keep you motivated.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- 📱 **Cross-Platform Support**  
+  Built using **React Native**, LixiLearn runs smoothly on both Android and iOS devices.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 💡 Technologies Used
 
-## Get a fresh project
+- **React Native** — Cross-platform mobile development framework  
+- **TypeScript** — Type-safe JavaScript  
+- **Redux Toolkit** — State management  
+- **Firebase** — Backend services (authentication, database, storage)  
+- **React Navigation** — Seamless in-app navigation  
+- **Expo** — Streamlined development and testing
 
-When you're ready, run:
+## 🎯 Target Audience
 
-```bash
-npm run reset-project
-```
+- English learners from **A1 to B2** levels  
+- Students preparing for tests (TOEIC, IELTS, CEFR)  
+- Busy professionals seeking flexible learning options  
+- Anyone wanting to improve their English communication skills
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🧭 Roadmap
 
-## Learn more
+- [x] MVP: Vocabulary, Grammar, and Listening modules  
+- [x] Firebase Auth & Realtime Database integration  
+- [ ] Daily Streaks & Achievement System  
+- [ ] Offline Mode  
+- [ ] Native voice assistant integration
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📸 Screenshots
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Here are some screenshots of the LixiLearn app:
+<p align="center">
+     <img src="images/1.png" alt="Feature 1" width="15%">
+  <img src="images/2.png" alt="Feature 2" width="15%">
+  <img src="images/3.png" alt="Feature 3" width="15%">
+  <img src="images/4.png" alt="Feature 4" width="15%">
+  <img src="images/5.png" alt="Feature 5" width="15%">
+  <img src="images/6.png" alt="Feature 6" width="15%">
+</p>
 
-## Join the community
+## 📬 Contact
 
-Join our community of developers creating universal apps.
+For more information, feedback, or partnership inquiries, feel free to reach out:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- 📧 Email: dangquochuy.connect@gmail.com 
+- 🌐 Website: [www.lixilearn.com](http://www.lixilearn.com)
+
+---
+
+_LixiLearn – Learn English the smart and fun way!_
