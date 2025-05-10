@@ -8,6 +8,14 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "sounds": ["/Users/macbook/Documents/Projects/ReactNative/LixiLearn/assets/audio/1.wav"]
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -36,6 +44,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "70c6d504-2227-4ddd-b85e-d44752797022"
+      }
+    },
+    "owner": "huypc2005"
   }
 }

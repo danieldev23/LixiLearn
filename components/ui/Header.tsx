@@ -25,7 +25,7 @@ export default function Header({
   return (
     <View style={styles.header}>
       {showBackButton ? (
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <TouchableOpacity style={[styles.backButton, ]} onPress={handleBack}>
           <Feather name="chevron-left" size={24} color="#333" />
         </TouchableOpacity>
       ) : (
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#F5F5F5",
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#F5F5F7",
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#F5F5F7",
     justifyContent: "center",
     alignItems: "center",
   },

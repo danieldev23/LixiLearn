@@ -13,12 +13,14 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Header from "@/components/ui/Header";
+import { router } from "expo-router";
+import { sentences } from '@/data/sentences';
 
 export default function Sentences() {
   const [selectedType, setSelectedType] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [animatedValue] = useState(new Animated.Value(0));
-  
+
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: 1,
@@ -27,84 +29,10 @@ export default function Sentences() {
     }).start();
   }, []);
 
-  const sentenceTypes = [
-    { 
-      id: 1, 
-      title: 'Passive Voice', 
-      description: 'Emphasize the action rather than the doer',
-      premium: false,
-      icon: 'repeat',
-      bgColor: '#E5EDFF',
-      iconColor: '#4A89DC'
-    },
-    { 
-      id: 2, 
-      title: 'Reported Speech', 
-      description: 'Report what someone else said',
-      premium: false,
-      icon: 'message-circle',
-      bgColor: '#E5F8FF',
-      iconColor: '#1DA1F2'
-    },
-    { 
-      id: 3, 
-      title: 'Conditional Sentences', 
-      description: '4 types of conditional sentences',
-      premium: false,
-      icon: 'git-branch',
-      bgColor: '#FFE8E5',
-      iconColor: '#FF5252'
-    },
-    { 
-      id: 4, 
-      title: 'Wish Sentences', 
-      description: 'Express regret or desire',
-      premium: true,
-      icon: 'star',
-      bgColor: '#FFF5E5',
-      iconColor: '#FFC107'
-    },
-    { 
-      id: 5, 
-      title: 'Question Tags', 
-      description: 'Short questions at the end of a sentence',
-      premium: true,
-      icon: 'help-circle',
-      bgColor: '#E5F9FF',
-      iconColor: '#00BCD4'
-    },
-    { 
-      id: 6, 
-      title: 'Imperative Sentences', 
-      description: 'Give orders or instructions',
-      premium: true,
-      icon: 'command',
-      bgColor: '#EFE5FF',
-      iconColor: '#7C4DFF'
-    },
-    { 
-      id: 7, 
-      title: 'Comparison Sentences', 
-      description: 'Compare two or more things',
-      premium: true,
-      icon: 'bar-chart-2',
-      bgColor: '#E5FFEE',
-      iconColor: '#4CAF50'
-    },
-    { 
-      id: 8, 
-      title: 'Exclamatory Sentences', 
-      description: 'Express strong feelings',
-      premium: true,
-      icon: 'zap',
-      bgColor: '#FFE5F2',
-      iconColor: '#F50057'
-    },
-  ];
 
-  const filteredSentenceTypes = sentenceTypes.filter(item =>
+  const filteredSentenceTypes = sentences.filter(item =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchQuery.toLowerCase())
+    item.use.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderSentenceTypeItem = (item, index) => {
@@ -124,13 +52,13 @@ export default function Sentences() {
       >
         <TouchableOpacity
           style={[styles.sentenceItem]}
-          onPress={() => console.log(123)}
+          onPress={() => router.push(item.link)}
           activeOpacity={0.8}
         >
           <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
             <Feather name={item.icon} size={22} color={item.iconColor} />
           </View>
-          
+
           <View style={styles.sentenceInfo}>
             <View style={styles.titleContainer}>
               <Text style={styles.sentenceTitle}>{item.title}</Text>
@@ -141,9 +69,9 @@ export default function Sentences() {
                 </View>
               )}
             </View>
-            <Text style={styles.sentenceDescription}>{item.description}</Text>
+            <Text style={styles.sentenceDescription}>{item.use}</Text>
           </View>
-          
+
           {/* <View style={[
             styles.checkbox,
             selectedType === item.id && styles.checkboxSelected
@@ -158,7 +86,7 @@ export default function Sentences() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      
+
       <Header
         title="Sentence Types"
         showBackButton={true}
@@ -184,15 +112,15 @@ export default function Sentences() {
           )}
         </View>
       </View>
-      
+
       {/* Sentence Types List */}
-      <ScrollView 
+      <ScrollView
         style={styles.listContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         {filteredSentenceTypes.map((item, index) => renderSentenceTypeItem(item, index))}
-        
+
         {/* Practice Button */}
         {selectedType && (
           <TouchableOpacity style={styles.practiceButton} activeOpacity={0.9}>

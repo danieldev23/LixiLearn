@@ -11,10 +11,9 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-
+import * as Notifications from 'expo-notifications';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -62,13 +61,15 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen name="tenses/[tense]"
-          options={({ route }) => ({
-            title: route?.params?.tense.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase()) || "Tense",
+          options={() => ({
             headerShown: false
           })}
-
         />
-
+             <Stack.Screen name="sentences/[sentence]"
+          options={() => ({
+            headerShown: false
+          })}
+        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

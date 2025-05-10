@@ -10,37 +10,27 @@ import {
   Dimensions,
 } from "react-native";
 import React from "react";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import Header from "@/components/ui/Header";
 const { width } = Dimensions.get("window");
 
 export default function Grammar(): React.ReactElement {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.header}>
-        {/* <TouchableOpacity style={styles.starButton}>
-          <LinearGradient
-            colors={["#FFD700", "#FFA500"]}
-            style={styles.premiumBadge}
-          >
-            <Ionicons name="star" size={14} color="#FFFFFF" />
-          </LinearGradient>
-          <Text style={styles.premiumText}>Premium</Text>
-        </TouchableOpacity> */}
-
-        <Text style={styles.headerTitle}>Grammar</Text>
-
-        {/* <TouchableOpacity style={styles.closeButton}>
-          <Ionicons name="close" size={24} color="#333" />
-        </TouchableOpacity> */}
-      </View>
+      <Header
+        title="Ngữ pháp"
+        showBackButton={true}
+        rightIcon={<Feather name="bookmark" size={22} color="#333" />}
+        onRightPress={() => console.log("Right button pressed")}
+      />
 
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
           <Ionicons name="search" size={20} color="#777" />
-          <Text style={styles.searchPlaceholder}>Search grammar topics</Text>
+          <Text style={styles.searchPlaceholder}>Tìm kiếm chủ đề</Text>
         </View>
       </View>
 
@@ -48,7 +38,7 @@ export default function Grammar(): React.ReactElement {
         style={styles.grammarBox}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionTitle}>Essential Topics</Text>
+        <Text style={styles.sectionTitle}>Các chủ đề cơ bản</Text>
 
         <TouchableOpacity style={styles.boxItem}>
           <LinearGradient
@@ -64,7 +54,7 @@ export default function Grammar(): React.ReactElement {
             onPress={() => router.push("/tenses")}
             style={styles.textContainer}
           >
-            <Text style={styles.boxTitle}>Tenses</Text>
+            <Text style={styles.boxTitle}>Tenses (các thì cơ bản)</Text>
             <Text style={styles.boxSubTitle}>13 tenses in English</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
@@ -87,7 +77,7 @@ export default function Grammar(): React.ReactElement {
             />
           </LinearGradient>
           <TouchableOpacity onPress={() => router.push("/sentences")} style={styles.textContainer}>
-            <Text style={styles.boxTitle}>Sentences</Text>
+            <Text style={styles.boxTitle}>Sentences (Các loại câu)</Text>
             <Text style={styles.boxSubTitle}>Sentences in English</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
@@ -99,7 +89,7 @@ export default function Grammar(): React.ReactElement {
           <MaterialIcons name="keyboard-arrow-right" size={24} color="#888" />
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Advanced Topics</Text>
+        <Text style={styles.sectionTitle}>Chủ đề nâng cao</Text>
 
         <TouchableOpacity style={styles.boxItem}>
           <LinearGradient
@@ -112,7 +102,7 @@ export default function Grammar(): React.ReactElement {
             />
           </LinearGradient>
           <View style={styles.textContainer}>
-            <Text style={styles.boxTitle}>Words</Text>
+            <Text style={styles.boxTitle}>Words (từ)</Text>
             <Text style={styles.boxSubTitle}>Words in English</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
@@ -135,7 +125,7 @@ export default function Grammar(): React.ReactElement {
             />
           </LinearGradient>
           <View style={styles.textContainer}>
-            <Text style={styles.boxTitle}>Others</Text>
+            <Text style={styles.boxTitle}>Others (Khác)</Text>
             <Text style={styles.boxSubTitle}>Other grammar topics</Text>
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>

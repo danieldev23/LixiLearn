@@ -11,12 +11,10 @@ import {
   Share,
   Alert,
 } from "react-native";
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Header from "@/components/ui/Header";
-
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
 import { playPronunciation } from "@/utils/playing-mp3";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 
 // Type definitions
@@ -49,346 +47,212 @@ type ParamList = {
   };
 };
 
-// POC color mapping for consistent styling
-const getPosColor = (pos: string) => {
-  switch (pos) {
-    case "verb": return { light: "#F8E2DD", main: "#E35F34", dark: "#C5502C" };
-    case "noun": return { light: "#F3ECD8", main: "#DBC174", dark: "#BA9F54" };
-    case "adjective": return { light: "#DCE7F7", main: "#5B8AC5", dark: "#4A73A5" };
-    case "adverb": return { light: "#DDF3E7", main: "#5BC58A", dark: "#4AA575" };
-    case "preposition": return { light: "#F3DCE7", main: "#C55B8A", dark: "#A54A73" };
-    default: return { light: "#E8E8E8", main: "#888888", dark: "#666666" };
-  }
-};
-
 export default function WordDetailScreen() {
   const route = useRoute<RouteProp<ParamList, "WordDetail">>();
   const navigation = useNavigation();
-  const { word } = route.params;
-  const posColors = getPosColor(word.pos);
-
-  const [status, setStatus] = useState<string>(word.status || "Unknown");
-  const [isStarred, setIsStarred] = useState<boolean>(word.starred || false);
-  const [notes, setNotes] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<string>("definition");
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  // Animation values
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 120],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  // Function to handle status change
-  const changeStatus = (newStatus: string) => {
-    setStatus(newStatus);
-    // Toast notification
-    Alert.alert("Status updated", `Word status changed to ${newStatus}`);
+  const { word } = route.params || { 
+    word: {
+      id: "1",
+      word: "abandon",
+      pos: "verb",
+      phonetic_text: "/əˈbændən/",
+      phonetic_am_text: "/əˈbændən/",
+      senses: [
+        {
+          definition: "to leave somebody, especially somebody you are responsible for, with no intention of returning",
+          examples: [
+            { 
+              cf: "", 
+              x: "The baby had been abandoned by its mother." 
+            },
+            { 
+              cf: "", 
+              x: "People often simply abandon their pets when they go abroad." 
+            },
+            { 
+              cf: "", 
+              x: "'We have been abandoned to our fate,' said one resident." 
+            },
+            { 
+              cf: "", 
+              x: "The study showed a deep fear among the elderly of being abandoned to the care of strangers." 
+            }
+          ]
+        },
+        {
+          definition: "to leave a thing or place, especially because it is impossible or dangerous to stay",
+          examples: [
+            { 
+              cf: "", 
+              x: "Snow forced many drivers to abandon their vehicles." 
+            },
+            { 
+              cf: "", 
+              x: "He gave the order to abandon ship (= to leave the ship because it was sinking)." 
+            },
+            { 
+              cf: "", 
+              x: "They were forced to abandon their homes." 
+            }
+          ]
+        }
+      ],
+      status: "Mastered",
+      starred: true
+    }
   };
-
-  // Function to toggle starred status
-  const toggleStarred = () => {
-    setIsStarred(!isStarred);
-    // Here you would also update the starred status in your main data store
-  };
+  const [status, setStatus] = useState(word.status || "Unknown");
+  const [isStarred, setIsStarred] = useState(word.starred || false);
+  const [activeSection, setActiveSection] = useState("definition");
 
   // Function to go back
   const goBack = () => {
     navigation.goBack();
   };
 
-  // Function to share word
-  const shareWord = async () => {
-    try {
-      const definitions = word.senses.map((sense, index) => 
-        `${index + 1}. ${sense.definition}`
-      ).join('\n');
-      
-      await Share.share({
-        message: `${word.word} (${word.pos})\n\nDefinitions:\n${definitions}`,
-        title: `Word: ${word.word}`,
-      });
-    } catch (error) {
-      Alert.alert("Error", "Failed to share word");
-    }
+  // Function to toggle star status
+  const toggleStar = () => {
+    setIsStarred(!isStarred);
   };
 
-  // Format the part of speech with proper capitalization
-  const formatPos = (pos: string) => {
+  // Function to play pronunciation
+  const handlePlayPronunciation = (type) => {
+    const pronunciationFile = type === "uk" ? word.phonetic : word.phonetic_am;
+    playPronunciation(pronunciationFile);
+  };
+
+  // Format the part of speech
+  const formatPos = (pos) => {
     return pos.charAt(0).toUpperCase() + pos.slice(1);
   };
 
+  // Handle bottom tab navigation
+  const handleTabPress = (tabName) => {
+    setActiveSection(tabName);
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       
-      {/* Animated Header */}
-      <Header 
-  title="English Tenses"
-  showBackButton={true}
-  rightIcon={<Feather name="bookmark" size={22} color="#333" />}
-  onRightPress={() => console.log("Right button pressed")}
-/>
-      {/* Main Header */}
-      <Animated.ScrollView 
-        style={styles.container}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={16}
-      >
-        <LinearGradient
-          colors={[posColors.light, '#FFFFFF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 0.6 }}
-          style={styles.gradientHeader}
-        >
-          <View style={styles.wordHeader}>
-            <View style={styles.wordMain}>
-              <Text style={styles.wordText}>{word.word}</Text>
-              <View style={[styles.posTag, { backgroundColor: posColors.main }]}>
-                <Text style={styles.posTagText}>{formatPos(word.pos)}</Text>
-              </View>
-            </View>
-            <TouchableOpacity onPress={toggleStarred} style={styles.starButton}>
-              <Ionicons
-                name={isStarred ? "star" : "star-outline"}
-                size={28}
-                color={isStarred ? "#FFD700" : "#888"}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.phoneticContainer}>
-            {word.phonetic || word.phonetic_text ? (
-              <View style={styles.phoneticRow}>
-                <TouchableOpacity
-                  style={styles.audioButton}
-                  onPress={() => playPronunciation(word.phonetic)}
-                >
-                  <Ionicons name="volume-medium" size={18} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.phoneticText}>
-                  {word.phonetic_text || `/${word.phonetic}/`} (UK)
-                </Text>
-              </View>
-            ) : null}
-
-            {word.phonetic_am || word.phonetic_am_text ? (
-              <View style={styles.phoneticRow}>
-                <TouchableOpacity
-                  style={[styles.audioButton, styles.audioButtonAM]}
-                  onPress={() => playPronunciation(word.phonetic_am)}
-                >
-                  <Ionicons name="volume-medium" size={18} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.phoneticText}>
-                  {word.phonetic_am_text || `/${word.phonetic_am}/`} (US)
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        </LinearGradient>
-
-        {/* Word status */}
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusLabel}>Status:</Text>
-          <View style={styles.statusButtonsRow}>
-            <TouchableOpacity
-              style={[
-                styles.statusButton,
-                status === "Unknown" && styles.statusActiveUnknown,
-              ]}
-              onPress={() => changeStatus("Unknown")}
-            >
-              <Text
-                style={[
-                  styles.statusButtonText,
-                  status === "Unknown" && styles.statusActiveText,
-                ]}
-              >
-                Unknown
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.statusButton,
-                status === "Learning" && styles.statusActiveLearning,
-              ]}
-              onPress={() => changeStatus("Learning")}
-            >
-              <Text
-                style={[
-                  styles.statusButtonText,
-                  status === "Learning" && styles.statusActiveText,
-                ]}
-              >
-                Learning
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.statusButton,
-                status === "Mastered" && styles.statusActiveMastered,
-              ]}
-              onPress={() => changeStatus("Mastered")}
-            >
-              <Text
-                style={[
-                  styles.statusButtonText,
-                  status === "Mastered" && styles.statusActiveText,
-                ]}
-              >
-                Mastered
-              </Text>
-            </TouchableOpacity>
-          </View>
+      {/* Header */}
+     <Header title="Chi tiết từ" showBackButton={true}
+             rightIcon={<Feather name="bookmark" size={22} color="#333" />}
+             onRightPress={() => console.log("Right button pressed")} />
+      
+      <ScrollView style={styles.scrollContainer}>
+        {/* Word header section */}
+        <View style={styles.wordSection}>
+          <Text style={styles.wordText}>{word.word}</Text>
+          <Text style={styles.posLabel}>A. Class: {formatPos(word.pos)}</Text>
         </View>
-
-        {/* Tabs */}
-        <View style={styles.tabBar}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "definition" && styles.activeTab]}
-            onPress={() => setActiveTab("definition")}
-          >
-            <Text style={[styles.tabText, activeTab === "definition" && styles.activeTabText]}>
-              Definition
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "notes" && styles.activeTab]}
-            onPress={() => setActiveTab("notes")}
-          >
-            <Text style={[styles.tabText, activeTab === "notes" && styles.activeTabText]}>
-              Notes
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "review" && styles.activeTab]}
-            onPress={() => setActiveTab("review")}
-          >
-            <Text style={[styles.tabText, activeTab === "review" && styles.activeTabText]}>
-              Review
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Tab Content */}
-        {activeTab === "definition" && (
-          <View style={styles.definitionContent}>
-            {word.senses &&
-              word.senses.map((sense, index) => (
-                <View key={index} style={styles.definitionBlock}>
-                  <View style={styles.definitionNumberContainer}>
-                    <View style={styles.definitionNumberBadge}>
-                      <Text style={styles.definitionNumberText}>{index + 1}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.definitionTextContainer}>
-                    <Text style={styles.definitionText}>{sense.definition}</Text>
-
-                    {sense.examples && sense.examples.length > 0 && (
-                      <View style={styles.examplesContainer}>
-                        <Text style={styles.examplesLabel}>Examples:</Text>
-                        {sense.examples.map((example, exIndex) => (
-                          <View key={exIndex} style={styles.exampleBlock}>
-                            <Text style={styles.exampleBullet}>•</Text>
-                            <Text style={styles.exampleText}>{example.x}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-                  </View>
-                </View>
-              ))}
-          </View>
-        )}
-
-        {activeTab === "notes" && (
-          <View style={styles.notesContent}>
-            <View style={styles.notesInputContainer}>
-              <TextInput
-                style={styles.notesInput}
-                placeholder="Add your notes about this word..."
-                value={notes}
-                onChangeText={setNotes}
-                multiline
-                placeholderTextColor="#999"
-              />
-            </View>
-            <TouchableOpacity style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Save Notes</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {activeTab === "review" && (
-          <View style={styles.reviewContent}>
-            <View style={styles.emptyReviewContainer}>
-              <Ionicons name="time-outline" size={48} color="#CCC" />
-              <Text style={styles.emptyReviewText}>
-                No review history yet
-              </Text>
-              <Text style={styles.emptyReviewSubtext}>
-                Your review sessions will appear here
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {/* Quiz section */}
-        <View style={styles.quizSection}>
-          <LinearGradient
-            colors={['#EBF1FB', '#DCE7F7']}
-            style={styles.quizCard}
-          >
-            <View style={styles.quizIcon}>
-              <Ionicons name="school" size={24} color="#FFF" />
-            </View>
-            <View style={styles.quizContent}>
-              <Text style={styles.quizTitle}>Quiz Yourself</Text>
-              <Text style={styles.quizDescription}>
-                Test your knowledge of this word with a quick quiz
-              </Text>
-            </View>
-            <TouchableOpacity style={styles.quizButton}>
-              <Text style={styles.quizButtonText}>Start</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        </View>
-
-        {/* Related words section */}
-        <View style={styles.relatedWordsSection}>
-          <Text style={styles.relatedWordsTitle}>Related Words</Text>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            style={styles.relatedWordsScroll}
-          >
-            {["example", "sample", "specimen", "illustration", "paradigm"].map((relatedWord, index) => (
-              <TouchableOpacity key={index} style={styles.relatedWordCard}>
-                <Text style={styles.relatedWordText}>{relatedWord}</Text>
+        
+        {/* Phonetic section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>B. Phonetic</Text>
+          <View style={styles.phoneticBox}>
+            <View style={styles.phoneticRow}>
+              <TouchableOpacity 
+                style={styles.playButton} 
+                onPress={() => handlePlayPronunciation("uk")}
+              >
+                <Ionicons name="volume-medium" size={22} color="#fff" />
               </TouchableOpacity>
-            ))}
-          </ScrollView>
+              <Text style={styles.phoneticText}>{word.phonetic_text} (US)</Text>
+            </View>
+            
+            <View style={styles.phoneticRow}>
+              <TouchableOpacity 
+                style={[styles.playButton, styles.playButtonRed]} 
+                onPress={() => handlePlayPronunciation("us")}
+              >
+                <Ionicons name="volume-medium" size={22} color="#fff" />
+              </TouchableOpacity>
+              <Text style={styles.phoneticText}>{word.phonetic_am_text} (UK)</Text>
+            </View>
+          </View>
         </View>
-
-        {/* Extra space at bottom for better scrolling */}
-        <View style={{ height: 40 }} />
-      </Animated.ScrollView>
-
-      {/* Footer actions */}
-      {/* <View style={styles.footer}>
-        <TouchableOpacity style={styles.editButton}>
-          <Ionicons name="pencil" size={20} color="#FFFFFF" />
-          <Text style={styles.editButtonText}>Edit Word</Text>
+        
+        {/* Definition section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>C. Definition</Text>
+          
+          {word.senses && word.senses.map((sense, index) => (
+            <View key={index} style={styles.definitionBlock}>
+              <Text style={styles.definitionNumber}>
+                {index + 1}. {sense.definition}
+              </Text>
+              
+              {sense.examples && sense.examples.length > 0 && (
+                <View style={styles.examplesContainer}>
+                  <Text style={styles.examplesLabel}>Examples:</Text>
+                  {sense.examples.map((example, exIndex) => (
+                    <View key={exIndex} style={styles.exampleItem}>
+                      <Text style={styles.exampleNumber}>{exIndex + 1}.</Text>
+                      <Text style={styles.exampleText}>
+                        {example.x}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      
+      {/* Bottom tab bar */}
+      {/* <View style={styles.tabBar}>
+        <TouchableOpacity 
+          style={styles.tabItem} 
+          onPress={() => handleTabPress("vocabulary")}
+        >
+          <View style={[styles.tabIcon, activeSection === "vocabulary" && styles.activeTabIcon]}>
+            <Ionicons name="book-outline" size={22} color={activeSection === "vocabulary" ? "#4B79E4" : "#888"} />
+          </View>
+          <Text style={[styles.tabText, activeSection === "vocabulary" && styles.activeTabText]}>
+            Vocabulary
+          </Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.testButton}>
-          <Ionicons name="flash" size={20} color="#FFFFFF" />
-          <Text style={styles.testButtonText}>Test Knowledge</Text>
+        <TouchableOpacity 
+          style={styles.tabItem} 
+          onPress={() => handleTabPress("studying")}
+        >
+          <Ionicons name="star-outline" size={22} color={activeSection === "studying" ? "#4B79E4" : "#888"} />
+          <Text style={[styles.tabText, activeSection === "studying" && styles.activeTabText]}>
+            Studying
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.tabItem} 
+          onPress={() => handleTabPress("grammar")}
+        >
+          <Ionicons name="book-outline" size={22} color={activeSection === "grammar" ? "#4B79E4" : "#888"} />
+          <Text style={[styles.tabText, activeSection === "grammar" && styles.activeTabText]}>
+            Grammar
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.tabItem} 
+          onPress={() => handleTabPress("streak")}
+        >
+          <Ionicons name="flame-outline" size={22} color={activeSection === "streak" ? "#4B79E4" : "#888"} />
+          <Text style={[styles.tabText, activeSection === "streak" && styles.activeTabText]}>
+            Streak
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.tabItem} 
+          onPress={() => handleTabPress("settings")}
+        >
+          <Ionicons name="settings-outline" size={22} color={activeSection === "settings" ? "#4B79E4" : "#888"} />
+          <Text style={[styles.tabText, activeSection === "settings" && styles.activeTabText]}>
+            Settings
+          </Text>
         </TouchableOpacity>
       </View> */}
     </SafeAreaView>
@@ -396,411 +260,150 @@ export default function WordDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
-  },
-  animatedHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 60,
-    backgroundColor: '#FFFFFF',
-    zIndex: 100,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  headerContent: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  headerBackButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    flex: 1,
-    textAlign: 'center',
-  },
-  headerRight: {
-    flexDirection: 'row',
-  },
-  headerIcon: {
-    padding: 8,
-    marginLeft: 4,
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "transparent",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    height: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
   },
   backButton: {
     padding: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 20,
   },
-  container: {
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#333",
+  },
+  statusBadge: {
+    fontSize: 14,
+    color: "#fff",
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  scrollContainer: {
     flex: 1,
+    padding: 2,
   },
-  gradientHeader: {
-    padding: 22,
-    paddingTop: 0,
-  },
-  wordHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-    paddingTop: 30,
-  },
-  wordMain: {
-    flex: 1,
+  wordSection: {
+    paddingHorizontal: 18,
+    paddingVertical: 20,
   },
   wordText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "700",
-    color: "#333",
-    marginBottom: 8,
+    color: "#111",
+    marginBottom: 10,
   },
-  posTag: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-  },
-  posTagText: {
-    color: "#FFFFFF",
-    fontSize: 12,
+  posLabel: {
+    fontSize: 17,
     fontWeight: "600",
+    color: "#444",
   },
-  starButton: {
-    padding: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 20,
-    marginLeft: 16,
+  sectionContainer: {
+    paddingHorizontal: 18,
+    paddingVertical: 15,
   },
-  phoneticContainer: {
-    marginBottom: 16,
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#444",
+    marginBottom: 15,
+  },
+  phoneticBox: {
+    backgroundColor: "#e4f0fa",
+    borderRadius: 10,
+    padding: 15,
   },
   phoneticRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  audioButton: {
-    backgroundColor: "#32A953", // Green for British pronunciation
-    borderRadius: 16,
-    width: 32,
-    height: 32,
-    alignItems: "center",
+  playButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#4CAF50",
     justifyContent: "center",
-    marginRight: 12,
+    alignItems: "center",
+    marginRight: 15,
   },
-  audioButtonAM: {
-    backgroundColor: "#E35F34", // Red for American pronunciation
+  playButtonRed: {
+    backgroundColor: "#E57373",
   },
   phoneticText: {
-    color: "#444",
     fontSize: 16,
-  },
-  statusContainer: {
-    backgroundColor: "#FFFFFF",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: "#F0F0F0",
-  },
-  statusLabel: {
-    fontSize: 15,
-    color: "#666",
-    marginBottom: 10,
-    fontWeight: "500",
-  },
-  statusButtonsRow: {
-    flexDirection: "row",
-  },
-  statusButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: "#F5F5F7",
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-  },
-  statusButtonText: {
-    fontSize: 14,
-    color: "#666",
-    fontWeight: "500",
-  },
-  statusActiveUnknown: {
-    backgroundColor: "#FF9800",
-    borderColor: "#FF9800",
-  },
-  statusActiveLearning: {
-    backgroundColor: "#4B79E4",
-    borderColor: "#4B79E4",
-  },
-  statusActiveMastered: {
-    backgroundColor: "#34A853",
-    borderColor: "#34A853",
-  },
-  statusActiveText: {
-    color: "#FFFFFF",
-  },
-  tabBar: {
-    flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-    marginTop: 16,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#4B79E4",
-  },
-  tabText: {
-    fontSize: 15,
-    color: "#666",
-    fontWeight: "500",
-  },
-  activeTabText: {
-    color: "#4B79E4",
-    fontWeight: "600",
-  },
-  definitionContent: {
-    padding: 16,
-    backgroundColor: "#FFFFFF",
+    color: "#333",
   },
   definitionBlock: {
-    flexDirection: "row",
-    marginBottom: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    marginBottom: 25,
   },
-  definitionNumberContainer: {
-    paddingRight: 12,
-  },
-  definitionNumberBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "#4B79E4",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  definitionNumberText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  definitionTextContainer: {
-    flex: 1,
-  },
-  definitionText: {
+  definitionNumber: {
     fontSize: 16,
     color: "#333",
     lineHeight: 24,
+    fontWeight: "500",
   },
   examplesContainer: {
-    marginTop: 12,
-    backgroundColor: "#F8F8FA",
-    padding: 12,
-    borderRadius: 8,
+    marginTop: 15,
   },
   examplesLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#666",
-    marginBottom: 8,
+    fontSize: 15,
+    color: "#555",
+    fontWeight: "500",
+    marginBottom: 10,
   },
-  exampleBlock: {
+  exampleItem: {
     flexDirection: "row",
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  exampleBullet: {
-    fontSize: 18,
-    color: "#4B79E4",
+  exampleNumber: {
+    fontSize: 15,
+    color: "#555",
     marginRight: 8,
+    width: 20,
   },
   exampleText: {
     fontSize: 15,
-    color: "#444",
+    color: "#333",
     flex: 1,
     lineHeight: 22,
   },
-  notesContent: {
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-  },
-  notesInputContainer: {
-    backgroundColor: "#F8F8FA",
-    borderRadius: 8,
-    padding: 12,
-    minHeight: 180,
-    borderWidth: 1,
-    borderColor: "#EBEBEB",
-  },
-  notesInput: {
-    fontSize: 15,
-    color: "#333",
-    textAlignVertical: "top",
-    minHeight: 160,
-  },
-  saveButton: {
-    backgroundColor: "#4B79E4",
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: "center",
-    marginTop: 16,
-  },
-  saveButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  reviewContent: {
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    minHeight: 200,
-  },
-  emptyReviewContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 40,
-  },
-  emptyReviewText: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#666",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyReviewSubtext: {
-    fontSize: 14,
-    color: "#999",
-    textAlign: "center",
-  },
-  quizSection: {
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    marginTop: 16,
-  },
-  quizCard: {
+  tabBar: {
     flexDirection: "row",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
+    height: 60,
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+    backgroundColor: "#fff",
   },
-  quizIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#4B79E4",
+  tabItem: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  quizContent: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  quizTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
+  tabIcon: {
     marginBottom: 4,
   },
-  quizDescription: {
-    fontSize: 14,
-    color: "#666",
+  activeTabIcon: {
+    backgroundColor: "#e6f0ff",
+    borderRadius: 5,
+    padding: 2,
   },
-  quizButton: {
-    backgroundColor: "#4B79E4",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+  tabText: {
+    fontSize: 12,
+    color: "#888",
   },
-  quizButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  relatedWordsSection: {
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    marginTop: 16,
-  },
-  relatedWordsTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 12,
-  },
-  relatedWordsScroll: {
-    flexDirection: "row",
-  },
-  relatedWordCard: {
-    backgroundColor: "#F5F5F7",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  relatedWordText: {
+  activeTabText: {
     color: "#4B79E4",
     fontWeight: "500",
-  },
-  footer: {
-    flexDirection: "row",
-    padding: 16,
-    backgroundColor: "#FFFFFF",
-    borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-  },
-  editButton: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#666",
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  editButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "500",
-    marginLeft: 8,
-  },
-  testButton: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#4B79E4",
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginLeft: 8,
-  },
-  testButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "500",
-    marginLeft: 8,
   },
 });

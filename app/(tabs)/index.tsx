@@ -337,42 +337,38 @@ export default function VocabularyScreen(): React.ReactElement {
 
   // Display word count
   const getWordCountText = () => {
-    return `${filteredData.length} ${
-      filteredData.length === 1 ? "word" : "words"
-    } found`;
+    return `Tìm thấy ${filteredData.length} ${filteredData.length === 1 ? "từ" : "từ"
+      }`;
   };
 
   // Word item component
   const WordItem = ({ item }: { item: VocabularyWord }) => {
     const navigation = useNavigation<NavigationProp>();
     const posColors = getPosColor(item.pos);
-    
+
     return (
       <TouchableOpacity
         style={styles.wordCard}
         onPress={() => navigation.navigate("word", { word: item })}
       >
-        <LinearGradient
-          colors={[posColors.light, '#FFFFFF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+        <View
+
           style={styles.wordCardGradient}
         >
           <View style={styles.wordHeader}>
-            <Text style={styles.wordText}>{item.word}</Text>
-            <TouchableOpacity 
-              style={styles.starButton}
-              onPress={() => toggleStarWord(item.id)}
-            >
-              <Ionicons
-                name={item.starred ? "star" : "star-outline"}
-                size={20}
-                color={item.starred ? "#FFD700" : "#888"}
-              />
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.posTagRow}>
+            <View style={styles.wordAndStar}>
+              <Text style={styles.wordText}>{item.word}</Text>
+              <TouchableOpacity
+                style={styles.starButton}
+                onPress={() => toggleStarWord(item.id)}
+              >
+                <Ionicons
+                  name={item.starred ? "star" : "star-outline"}
+                  size={20}
+                  color={item.starred ? "#FFD700" : "#888"}
+                />
+              </TouchableOpacity>
+            </View>
             <View
               style={[
                 styles.posTag,
@@ -381,7 +377,11 @@ export default function VocabularyScreen(): React.ReactElement {
             >
               <Text style={styles.posTagText}>{item.pos}</Text>
             </View>
-            
+          </View>
+
+          <View style={styles.posTagRow}>
+
+
             {item.status === "Mastered" && (
               <View style={styles.masteredTag}>
                 <Ionicons name="checkmark-circle" size={14} color="#34A853" />
@@ -413,7 +413,7 @@ export default function VocabularyScreen(): React.ReactElement {
                 >
                   <Ionicons name="volume-medium" size={16} color="white" />
                 </TouchableOpacity>
-                <Text style={styles.phoneticText}>
+                <Text style={[styles.phoneticText, { marginLeft: 2 }]}>
                   {item.phonetic_am_text || item.phonetic_am} (US)
                 </Text>
               </View>
@@ -426,62 +426,10 @@ export default function VocabularyScreen(): React.ReactElement {
                 {item.senses[0].definition}
               </Text>
 
-              {item.senses[0].examples && item.senses[0].examples.length > 0 && (
-                <View style={styles.examplesContainer}>
-                  <Text style={styles.exampleLabel}>Example:</Text>
-                  <Text style={styles.exampleText}>
-                    {item.senses[0].examples[0].x}
-                  </Text>
-                </View>
-              )}
+
             </>
           )}
-
-          <View style={styles.cardFooter}>
-            <View style={styles.statusRow}>
-              <Text style={styles.statusLabel}>Status:</Text>
-              <TouchableOpacity
-                style={[
-                  styles.statusButton,
-                  item.status === "Unknown" && styles.activeStatusUnknown,
-                ]}
-                onPress={() => changeWordStatus(item.id, "Unknown")}
-              >
-                <Text
-                  style={[
-                    styles.statusText,
-                    item.status === "Unknown" && styles.activeStatusText,
-                  ]}
-                >
-                  Unknown
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.statusButton,
-                  item.status === "Mastered" && styles.activeStatusMastered,
-                ]}
-                onPress={() => changeWordStatus(item.id, "Mastered")}
-              >
-                <Text
-                  style={[
-                    styles.statusText,
-                    item.status === "Mastered" && styles.activeStatusText,
-                  ]}
-                >
-                  Mastered
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => Alert.alert("Edit Word", `Editing word: ${item.word}`)}
-            >
-              <Ionicons name="pencil" size={16} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -499,14 +447,14 @@ export default function VocabularyScreen(): React.ReactElement {
     style?: object;
   }) => {
     const posColor = title in posOptions ? getPosColor(title).main : undefined;
-    
+
     return (
       <TouchableOpacity
         style={[
-          styles.filterButton, 
-          isActive ? 
-            (posColor ? { backgroundColor: posColor, borderColor: posColor } : styles.activeFilter) 
-            : {}, 
+          styles.filterButton,
+          isActive ?
+            (posColor ? { backgroundColor: posColor, borderColor: posColor } : styles.activeFilter)
+            : {},
           style
         ]}
         onPress={onPress}
@@ -573,13 +521,13 @@ export default function VocabularyScreen(): React.ReactElement {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      
-      <Header 
-  title="Vocabulary"
-  showBackButton={false}
-  rightIcon={<Feather name="bookmark" size={22} color="#333" />}
-  onRightPress={() => console.log("Right button pressed")}
-/>
+
+      <Header
+        title="Từ vựng"
+        showBackButton={false}
+        rightIcon={<Feather name="bookmark" size={22} color="#333" />}
+        onRightPress={() => console.log("Right button pressed")}
+      />
 
       {showSearch ? (
         <View style={styles.searchContainer}>
@@ -608,24 +556,24 @@ export default function VocabularyScreen(): React.ReactElement {
         </View>
       ) : (
         <View style={styles.searchPromptContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.searchPrompt}
             onPress={() => setShowSearch(true)}
           >
             <Ionicons name="search" size={18} color="#777" />
-            <Text style={styles.searchPromptText}>Search vocabulary</Text>
+            <Text style={styles.searchPromptText}>Tìm kiếm từ vựng</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.wordCount}>
+
+          {/* <TouchableOpacity style={styles.wordCount}>
             <Text style={styles.wordCountText}>{getWordCountText()}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
 
       <View style={styles.filterSection}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.filterRow}>
-            <Text style={styles.filterLabel}>Word Type:</Text>
+            <Text style={styles.filterLabel}>Loại từ:</Text>
             <ScrollableFilterRow>
               {posOptions.map((pos) => (
                 <FilterButton
@@ -639,8 +587,9 @@ export default function VocabularyScreen(): React.ReactElement {
           </View>
 
           <View style={styles.filterRow}>
-            <Text style={styles.filterLabel}>Letter:</Text>
-            <View style={styles.letterGrid}>
+            <Text style={styles.filterLabel}>Từ:</Text>
+            <ScrollView horizontal
+              showsHorizontalScrollIndicator={false} style={styles.letterGrid}>
               {letterOptions.map((letter) => (
                 <TouchableOpacity
                   key={letter}
@@ -660,30 +609,8 @@ export default function VocabularyScreen(): React.ReactElement {
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
           </View>
-
-          <View style={styles.filterRow}>
-            <Text style={styles.filterLabel}>Status:</Text>
-            <ScrollableFilterRow>
-              {statusOptions.map((status) => (
-                <FilterButton
-                  key={status}
-                  title={status}
-                  isActive={activeFilters.status.includes(status)}
-                  onPress={() => toggleStatusFilter(status)}
-                  style={
-                    status === "Mastered" && activeFilters.status.includes(status)
-                      ? styles.masteredFilter
-                      : status === "Star" && activeFilters.status.includes(status)
-                      ? styles.starFilter
-                      : {}
-                  }
-                />
-              ))}
-            </ScrollableFilterRow>
-          </View>
-
           <View style={styles.activeFiltersRow}>
             <View style={styles.filterSummary}>
               <Ionicons name="filter" size={16} color="#4B79E4" />
@@ -693,7 +620,7 @@ export default function VocabularyScreen(): React.ReactElement {
               style={styles.clearFiltersButton}
               onPress={clearFilters}
             >
-              <Text style={styles.clearFiltersText}>Clear All</Text>
+              <Text style={styles.clearFiltersText}>Xoá</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -714,7 +641,7 @@ export default function VocabularyScreen(): React.ReactElement {
               <Text style={styles.emptyText}>
                 No words found matching your filters
               </Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.resetButton}
                 onPress={clearFilters}
               >
@@ -944,34 +871,41 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   wordCard: {
-    borderRadius: 16,
+    borderRadius: 12,
     marginBottom: 16,
     overflow: "hidden",
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
+    borderColor: '333',
     shadowRadius: 4,
   },
   wordCardGradient: {
-    padding: 16,
-    borderRadius: 16,
+
+    backgroundColor: "#e4f0fa",
+    padding: 10,
   },
   wordHeader: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    alignItems: "center",
+  },
+  wordAndStar: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+
   },
   wordText: {
     fontSize: 18,
     fontWeight: "700",
     color: "#333",
-    flex: 1,
   },
   starButton: {
-    width: 36,
-    height: 36,
+    width: 24,
+    height: 24,
+    marginLeft: 6,
     borderRadius: 18,
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     justifyContent: "center",
@@ -980,7 +914,6 @@ const styles = StyleSheet.create({
   posTagRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
   },
   posTag: {
     paddingVertical: 4,
@@ -1008,7 +941,10 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   phoneticContainer: {
-    marginBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 12,
+
   },
   pronunciationRow: {
     flexDirection: "row",
@@ -1031,473 +967,473 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 8,
+    marginLeft: 8,
   },
   phoneticText: {
     color: "#666",
     fontSize: 14,
   },
-// Continuing the styles object from where it left off
-definitionText: {
-  fontSize: 15,
-  color: "#333",
-  marginBottom: 10,
-  lineHeight: 22,
-},
-examplesContainer: {
-  backgroundColor: "rgba(245, 245, 250, 0.7)",
-  padding: 12,
-  borderRadius: 8,
-  marginBottom: 12,
-},
-exampleLabel: {
-  fontSize: 13,
-  fontWeight: "600",
-  color: "#666",
-  marginBottom: 6,
-},
-exampleText: {
-  fontSize: 14,
-  color: "#333",
-  fontStyle: "italic",
-  lineHeight: 20,
-},
-cardFooter: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginTop: 10,
-  paddingTop: 10,
-  borderTopWidth: 1,
-  borderTopColor: "rgba(0, 0, 0, 0.07)",
-},
-statusRow: {
-  flexDirection: "row",
-  alignItems: "center",
-},
-statusLabel: {
-  fontSize: 13,
-  color: "#666",
-  marginRight: 8,
-},
-statusButton: {
-  paddingVertical: 4,
-  paddingHorizontal: 10,
-  borderRadius: 12,
-  backgroundColor: "#F5F5F7",
-  marginRight: 6,
-},
-activeStatusUnknown: {
-  backgroundColor: "#FF9800",
-},
-activeStatusMastered: {
-  backgroundColor: "#34A853",
-},
-statusText: {
-  fontSize: 12,
-  color: "#666",
-},
-activeStatusText: {
-  color: "white",
-  fontWeight: "500",
-},
-editButton: {
-  backgroundColor: "#4B79E4",
-  width: 32,
-  height: 32,
-  borderRadius: 16,
-  justifyContent: "center",
-  alignItems: "center",
-  elevation: 2,
-  shadowColor: "#4B79E4",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.3,
-  shadowRadius: 3,
-},
-loadingContainer: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "#FAFAFA",
-},
-loadingText: {
-  marginTop: 12,
-  fontSize: 16,
-  color: "#666",
-},
-emptyContainer: {
-  alignItems: "center",
-  justifyContent: "center",
-  paddingVertical: 60,
-},
-emptyText: {
-  fontSize: 16,
-  color: "#666",
-  marginTop: 16,
-  marginBottom: 20,
-  textAlign: "center",
-},
-resetButton: {
-  backgroundColor: "#4B79E4",
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 20,
-},
-resetButtonText: {
-  color: "white",
-  fontWeight: "600",
-  fontSize: 15,
-},
-// Additional styles for improved UI
-addWordButton: {
-  position: "absolute",
-  bottom: 20,
-  right: 20,
-  width: 56,
-  height: 56,
-  borderRadius: 28,
-  backgroundColor: "#4B79E4",
-  justifyContent: "center",
-  alignItems: "center",
-  elevation: 4,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-},
-sortFilterRow: {
-  flexDirection: "row",
-  paddingHorizontal: 20,
-  paddingVertical: 8,
-  backgroundColor: "#FFFFFF",
-  borderBottomWidth: 1,
-  borderBottomColor: "#F0F0F0",
-},
-sortButton: {
-  flexDirection: "row",
-  alignItems: "center",
-  backgroundColor: "#F5F5F7",
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  borderRadius: 16,
-  marginRight: 12,
-},
-sortButtonText: {
-  fontSize: 13,
-  color: "#444",
-  marginLeft: 4,
-},
-wordDetailsHeader: {
-  backgroundColor: "#FFFFFF",
-  padding: 20,
-  borderBottomWidth: 1,
-  borderBottomColor: "#F0F0F0",
-},
-wordDetailsWord: {
-  fontSize: 24,
-  fontWeight: "700",
-  color: "#333",
-  marginBottom: 8,
-},
-wordDetailsPhoneticContainer: {
-  flexDirection: "row",
-  flexWrap: "wrap",
-  alignItems: "center",
-  marginBottom: 12,
-},
-tabBar: {
-  flexDirection: "row",
-  backgroundColor: "#FFFFFF",
-  borderBottomWidth: 1,
-  borderBottomColor: "#F0F0F0",
-},
-tab: {
-  flex: 1,
-  paddingVertical: 12,
-  alignItems: "center",
-},
-activeTab: {
-  borderBottomWidth: 2,
-  borderBottomColor: "#4B79E4",
-},
-tabText: {
-  fontSize: 14,
-  color: "#666",
-  fontWeight: "500",
-},
-activeTabText: {
-  color: "#4B79E4",
-  fontWeight: "600",
-},
-sensesContainer: {
-  backgroundColor: "#FFFFFF",
-  paddingHorizontal: 20,
-  paddingVertical: 16,
-},
-senseHeader: {
-  fontSize: 16,
-  fontWeight: "600",
-  color: "#333",
-  marginBottom: 8,
-},
-definitionContainer: {
-  marginBottom: 16,
-},
-definitionNumber: {
-  fontSize: 14,
-  fontWeight: "700",
-  color: "#4B79E4",
-  marginRight: 8,
-},
-synonymsContainer: {
-  flexDirection: "row",
-  flexWrap: "wrap",
-  marginTop: 8,
-},
-synonym: {
-  backgroundColor: "#EBF1FB",
-  paddingHorizontal: 10,
-  paddingVertical: 6,
-  borderRadius: 12,
-  marginRight: 8,
-  marginBottom: 8,
-},
-synonymText: {
-  color: "#4B79E4",
-  fontSize: 13,
-},
-notesContainer: {
-  backgroundColor: "#FFFFFF",
-  margin: 20,
-  padding: 16,
-  borderRadius: 12,
-  borderWidth: 1,
-  borderColor: "#F0F0F0",
-},
-notesHeader: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 12,
-},
-notesTitle: {
-  fontSize: 16,
-  fontWeight: "600",
-  color: "#333",
-},
-notesInput: {
-  backgroundColor: "#F5F5F7",
-  borderRadius: 8,
-  padding: 12,
-  fontSize: 14,
-  color: "#333",
-  minHeight: 100,
-  textAlignVertical: "top",
-},
-saveButton: {
-  backgroundColor: "#4B79E4",
-  paddingVertical: 12,
-  borderRadius: 8,
-  alignItems: "center",
-  marginTop: 12,
-},
-saveButtonText: {
-  color: "#FFFFFF",
-  fontWeight: "600",
-  fontSize: 15,
-},
-quizButton: {
-  flexDirection: "row",
-  alignItems: "center",
-  backgroundColor: "#EBF1FB",
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-  borderRadius: 12,
-  margin: 20,
-},
-quizButtonIcon: {
-  backgroundColor: "#4B79E4",
-  width: 32,
-  height: 32,
-  borderRadius: 16,
-  justifyContent: "center",
-  alignItems: "center",
-  marginRight: 12,
-},
-quizButtonTextContainer: {
-  flex: 1,
-},
-quizButtonTitle: {
-  fontSize: 15,
-  fontWeight: "600",
-  color: "#333",
-},
-quizButtonSubtitle: {
-  fontSize: 13,
-  color: "#666",
-  marginTop: 2,
-},
-// Animations and additional enhancements
-progressContainer: {
-  marginTop: 8,
-  height: 6,
-  backgroundColor: "#F0F0F0",
-  borderRadius: 3,
-  overflow: "hidden",
-},
-progressBar: {
-  height: "100%",
-  backgroundColor: "#4B79E4",
-},
-badgeRow: {
-  flexDirection: "row",
-  marginTop: 16,
-},
-badge: {
-  backgroundColor: "#F5F5F7",
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-  borderRadius: 16,
-  marginRight: 8,
-  flexDirection: "row",
-  alignItems: "center",
-},
-badgeIcon: {
-  marginRight: 4,
-},
-badgeText: {
-  fontSize: 12,
-  color: "#666",
-},
-statsContainer: {
-  flexDirection: "row",
-  backgroundColor: "#FFFFFF",
-  padding: 16,
-  borderRadius: 12,
-  marginHorizontal: 20,
-  marginVertical: 12,
-  elevation: 2,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-},
-statItem: {
-  flex: 1,
-  alignItems: "center",
-},
-statValue: {
-  fontSize: 18,
-  fontWeight: "700",
-  color: "#333",
-  marginBottom: 4,
-},
-statLabel: {
-  fontSize: 12,
-  color: "#666",
-},
-statDivider: {
-  width: 1,
-  height: "80%",
-  backgroundColor: "#F0F0F0",
-},
-// Additional UI for bookmarks and history
-historyItem: {
-  flexDirection: "row",
-  alignItems: "center",
-  padding: 16,
-  borderBottomWidth: 1,
-  borderBottomColor: "#F0F0F0",
-},
-historyTextContainer: {
-  flex: 1,
-  marginLeft: 12,
-},
-historyWord: {
-  fontSize: 16,
-  fontWeight: "600",
-  color: "#333",
-},
-historyTime: {
-  fontSize: 12,
-  color: "#888",
-  marginTop: 4,
-},
-emptyStateContainer: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  paddingHorizontal: 40,
-  paddingVertical: 80,
-},
-emptyStateImage: {
-  width: 120,
-  height: 120,
-  marginBottom: 24,
-  opacity: 0.6,
-},
-emptyStateTitle: {
-  fontSize: 18,
-  fontWeight: "600",
-  color: "#333",
-  marginBottom: 8,
-  textAlign: "center",
-},
-emptyStateText: {
-  fontSize: 14,
-  color: "#666",
-  textAlign: "center",
-  lineHeight: 20,
-  marginBottom: 24,
-},
-actionButton: {
-  backgroundColor: "#4B79E4",
-  paddingVertical: 12,
-  paddingHorizontal: 20,
-  borderRadius: 24,
-  alignItems: "center",
-},
-actionButtonText: {
-  color: "#FFFFFF",
-  fontWeight: "600",
-  fontSize: 15,
-},
-// Settings UI
-settingsSection: {
-  backgroundColor: "#FFFFFF",
-  marginBottom: 16,
-  borderRadius: 12,
-  overflow: "hidden",
-},
-settingsHeader: {
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-  backgroundColor: "#F5F5F7",
-},
-settingsHeaderText: {
-  fontSize: 14,
-  fontWeight: "600",
-  color: "#666",
-},
-settingsRow: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  paddingHorizontal: 16,
-  paddingVertical: 16,
-  borderBottomWidth: 1,
-  borderBottomColor: "#F0F0F0",
-},
-settingsLabelContainer: {
-  flex: 1,
-},
-settingsLabel: {
-  fontSize: 16,
-  color: "#333",
-},
-settingsDescription: {
-  fontSize: 13,
-  color: "#666",
-  marginTop: 4,
-},
+  // Continuing the styles object from where it left off
+  definitionText: {
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 10,
+    lineHeight: 22,
+  },
+  examplesContainer: {
+    backgroundColor: "rgba(245, 245, 250, 0.7)",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  exampleLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#666",
+    marginBottom: 6,
+  },
+  exampleText: {
+    fontSize: 14,
+    color: "#333",
+    fontStyle: "italic",
+    lineHeight: 20,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0, 0, 0, 0.07)",
+  },
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statusLabel: {
+    fontSize: 13,
+    color: "#666",
+    marginRight: 8,
+  },
+  statusButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    backgroundColor: "#F5F5F7",
+    marginRight: 6,
+  },
+  activeStatusUnknown: {
+    backgroundColor: "#FF9800",
+  },
+  activeStatusMastered: {
+    backgroundColor: "#34A853",
+  },
+  statusText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  activeStatusText: {
+    color: "white",
+    fontWeight: "500",
+  },
+  editButton: {
+    backgroundColor: "#4B79E4",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 2,
+    shadowColor: "#4B79E4",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FAFAFA",
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#666",
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#666",
+    marginTop: 16,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  resetButton: {
+    backgroundColor: "#4B79E4",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  resetButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+  // Additional styles for improved UI
+  addWordButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#4B79E4",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  sortFilterRow: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  sortButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F7",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    marginRight: 12,
+  },
+  sortButtonText: {
+    fontSize: 13,
+    color: "#444",
+    marginLeft: 4,
+  },
+  wordDetailsHeader: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  wordDetailsWord: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 8,
+  },
+  wordDetailsPhoneticContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  tabBar: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+    borderBottomColor: "#4B79E4",
+  },
+  tabText: {
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "500",
+  },
+  activeTabText: {
+    color: "#4B79E4",
+    fontWeight: "600",
+  },
+  sensesContainer: {
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  senseHeader: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 8,
+  },
+  definitionContainer: {
+    marginBottom: 16,
+  },
+  definitionNumber: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#4B79E4",
+    marginRight: 8,
+  },
+  synonymsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 8,
+  },
+  synonym: {
+    backgroundColor: "#EBF1FB",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  synonymText: {
+    color: "#4B79E4",
+    fontSize: 13,
+  },
+  notesContainer: {
+    backgroundColor: "#FFFFFF",
+    margin: 20,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#F0F0F0",
+  },
+  notesHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  notesTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+  notesInput: {
+    backgroundColor: "#F5F5F7",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    color: "#333",
+    minHeight: 100,
+    textAlignVertical: "top",
+  },
+  saveButton: {
+    backgroundColor: "#4B79E4",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  saveButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+  quizButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EBF1FB",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    margin: 20,
+  },
+  quizButtonIcon: {
+    backgroundColor: "#4B79E4",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  quizButtonTextContainer: {
+    flex: 1,
+  },
+  quizButtonTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#333",
+  },
+  quizButtonSubtitle: {
+    fontSize: 13,
+    color: "#666",
+    marginTop: 2,
+  },
+  // Animations and additional enhancements
+  progressContainer: {
+    marginTop: 8,
+    height: 6,
+    backgroundColor: "#F0F0F0",
+    borderRadius: 3,
+    overflow: "hidden",
+  },
+  progressBar: {
+    height: "100%",
+    backgroundColor: "#4B79E4",
+  },
+  badgeRow: {
+    flexDirection: "row",
+    marginTop: 16,
+  },
+  badge: {
+    backgroundColor: "#F5F5F7",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  badgeIcon: {
+    marginRight: 4,
+  },
+  badgeText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    padding: 16,
+    borderRadius: 12,
+    marginHorizontal: 20,
+    marginVertical: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#666",
+  },
+  statDivider: {
+    width: 1,
+    height: "80%",
+    backgroundColor: "#F0F0F0",
+  },
+  // Additional UI for bookmarks and history
+  historyItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  historyTextContainer: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  historyWord: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+  historyTime: {
+    fontSize: 12,
+    color: "#888",
+    marginTop: 4,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 40,
+    paddingVertical: 80,
+  },
+  emptyStateImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 24,
+    opacity: 0.6,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  actionButton: {
+    backgroundColor: "#4B79E4",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 24,
+    alignItems: "center",
+  },
+  actionButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+  // Settings UI
+  settingsSection: {
+    backgroundColor: "#FFFFFF",
+    marginBottom: 16,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  settingsHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#F5F5F7",
+  },
+  settingsHeaderText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#666",
+  },
+  settingsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  settingsLabelContainer: {
+    flex: 1,
+  },
+  settingsLabel: {
+    fontSize: 16,
+    color: "#333",
+  },
+  settingsDescription: {
+    fontSize: 13,
+    color: "#666",
+    marginTop: 4,
+  },
 });
