@@ -214,7 +214,7 @@ export default function ChatScreen() {
               style={styles.input}
               value={inputText}
               onChangeText={setInputText}
-              placeholder="Nhập tin nhắn..."
+              placeholder="Nhập tin nhắn... )_"
               placeholderTextColor="#9ca3af"
               multiline
               maxLength={500}
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f4f6',
     borderRadius: 24,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 14,
   },
   attachButton: {
     padding: 4,

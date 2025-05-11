@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Header from "@/components/ui/Header";
-import { router } from "expo-router";
 import { sentences } from '@/data/sentences';
+import { SentenceItem } from '@/components/sentences/SentenceItem';
 
 export default function Sentences() {
   const [selectedType, setSelectedType] = useState(null);
@@ -35,60 +35,12 @@ export default function Sentences() {
     item.use.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderSentenceTypeItem = (item, index) => {
-    const translateY = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [50, 0],
-    });
-    const opacity = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 1],
-    });
-
-    return (
-      <Animated.View
-        key={item.id}
-        style={{ opacity, transform: [{ translateY }] }}
-      >
-        <TouchableOpacity
-          style={[styles.sentenceItem]}
-          onPress={() => router.push(item.link)}
-          activeOpacity={0.8}
-        >
-          <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
-            <Feather name={item.icon} size={22} color={item.iconColor} />
-          </View>
-
-          <View style={styles.sentenceInfo}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.sentenceTitle}>{item.title}</Text>
-              {item.premium && (
-                <View style={styles.premiumBadge}>
-                  <Feather name="gift" size={10} color="#FFFFFF" />
-                  <Text style={styles.premiumText}>PRO</Text>
-                </View>
-              )}
-            </View>
-            <Text style={styles.sentenceDescription}>{item.use}</Text>
-          </View>
-
-          {/* <View style={[
-            styles.checkbox,
-            selectedType === item.id && styles.checkboxSelected
-          ]}>
-            {selectedType === item.id && <Feather name="check" size={14} color="#FFFFFF" />}
-          </View> */}
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <Header
-        title="Sentence Types"
+        title="Các loại câu"
         showBackButton={true}
         rightIcon={<Feather name="more-vertical" size={22} color="#333" />}
         onRightPress={() => console.log("Right button pressed")}
@@ -100,7 +52,7 @@ export default function Sentences() {
           <Feather name="search" size={18} color="#8E8E93" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search sentence types..."
+            placeholder="Nhập loại câu..."
             placeholderTextColor="#8E8E93"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -119,7 +71,7 @@ export default function Sentences() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {filteredSentenceTypes.map((item, index) => renderSentenceTypeItem(item, index))}
+        {filteredSentenceTypes.map((item, index) => SentenceItem(item, index))}
 
         {/* Practice Button */}
         {selectedType && (

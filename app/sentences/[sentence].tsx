@@ -11,8 +11,6 @@ import Header from "@/components/ui/Header";
 import Markdown from "react-native-markdown-display";
 import { useEffect, useState } from "react";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { getTense } from "@/data/tenses";
 import { getSentence } from "@/data/sentences";
 
 // Store markdown content directly in a JavaScript object instead of trying to import files
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    paddingHorizontal: 27,
+    paddingHorizontal: 20,
     paddingVertical: 16,
   },
   loadingContainer: {

@@ -42,50 +42,11 @@ import {
 import Header from "@/components/ui/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { playPronunciation } from "@/utils/playing-mp3";
+import { WordItem } from "@/components/home/WordItem";
 import { StatusBar } from "expo-status-bar";
-import { useNavigation } from "expo-router";
-
+import { FilterState, letterOptions, posOptions, VocabularyWord } from "@/types/vocabulary";
 const { width } = Dimensions.get("window");
 
-// Type definitions
-interface VocabularyWord {
-  id: string;
-  word: string;
-  pos: string;
-  phonetic: string;
-  phonetic_text: string;
-  phonetic_am: string;
-  phonetic_am_text: string;
-  senses: Sense[];
-  status?: string;
-  starred?: boolean;
-}
-
-export interface Example {
-  cf: string;
-  x: string;
-}
-
-export interface Sense {
-  definition: string;
-  examples: Example[];
-}
-
-interface FilterState {
-  letter: string;
-  pos: string[];
-  status: string[];
-}
-
-type RootStackParamList = {
-  WordDetail: { word: VocabularyWord };
-};
-
-type NavigationProp = any; // Using any for simplicity, should use proper navigation typing
-
-// Get vocabulary data function
 const getAllVocabularyData = () => {
   const letterJsonMap = {
     A: a,
@@ -136,22 +97,7 @@ const getAllVocabularyData = () => {
   return allWords;
 };
 
-// Filter options
-const letterOptions: string[] = [
-  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-  "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-];
 
-const posOptions: string[] = [
-  "indefinite article",
-  "verb",
-  "noun",
-  "adjective",
-  "adverb",
-  "preposition",
-];
-
-const statusOptions: string[] = ["Unknown", "Mastered", "Star"];
 
 // POC color mapping
 const getPosColor = (pos: string) => {
@@ -254,14 +200,14 @@ export default function VocabularyScreen(): React.ReactElement {
 
   // Toggle filter functions
   const toggleLetterFilter = (letter: string) => {
-    setActiveFilters((prev) => ({
+    setActiveFilters((prev: any) => ({
       ...prev,
       letter: letter,
     }));
   };
 
   const togglePosFilter = (pos: string) => {
-    setActiveFilters((prev) => {
+    setActiveFilters((prev: any) => {
       const posFilters = [...prev.pos];
       const index = posFilters.indexOf(pos);
 
@@ -278,23 +224,6 @@ export default function VocabularyScreen(): React.ReactElement {
     });
   };
 
-  const toggleStatusFilter = (status: string) => {
-    setActiveFilters((prev) => {
-      const statusFilters = [...prev.status];
-      const index = statusFilters.indexOf(status);
-
-      if (index >= 0) {
-        statusFilters.splice(index, 1);
-      } else {
-        statusFilters.push(status);
-      }
-
-      return {
-        ...prev,
-        status: statusFilters,
-      };
-    });
-  };
 
   const clearFilters = () => {
     setActiveFilters({
@@ -305,134 +234,6 @@ export default function VocabularyScreen(): React.ReactElement {
     setSearchText("");
   };
 
-  // Toggle star status for a word
-  const toggleStarWord = (id: string) => {
-    setVocabularyData((prev) => {
-      return prev.map((word) => {
-        if (word.id === id) {
-          return {
-            ...word,
-            starred: !word.starred,
-          };
-        }
-        return word;
-      });
-    });
-  };
-
-  // Change word status
-  const changeWordStatus = (id: string, status: string) => {
-    setVocabularyData((prev) => {
-      return prev.map((word) => {
-        if (word.id === id) {
-          return {
-            ...word,
-            status: status,
-          };
-        }
-        return word;
-      });
-    });
-  };
-
-  // Display word count
-  const getWordCountText = () => {
-    return `Tìm thấy ${filteredData.length} ${filteredData.length === 1 ? "từ" : "từ"
-      }`;
-  };
-
-  // Word item component
-  const WordItem = ({ item }: { item: VocabularyWord }) => {
-    const navigation = useNavigation<NavigationProp>();
-    const posColors = getPosColor(item.pos);
-
-    return (
-      <TouchableOpacity
-        style={styles.wordCard}
-        onPress={() => navigation.navigate("word", { word: item })}
-      >
-        <View
-
-          style={styles.wordCardGradient}
-        >
-          <View style={styles.wordHeader}>
-            <View style={styles.wordAndStar}>
-              <Text style={styles.wordText}>{item.word}</Text>
-              <TouchableOpacity
-                style={styles.starButton}
-                onPress={() => toggleStarWord(item.id)}
-              >
-                <Ionicons
-                  name={item.starred ? "star" : "star-outline"}
-                  size={20}
-                  color={item.starred ? "#FFD700" : "#888"}
-                />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={[
-                styles.posTag,
-                { backgroundColor: posColors.main }
-              ]}
-            >
-              <Text style={styles.posTagText}>{item.pos}</Text>
-            </View>
-          </View>
-
-          <View style={styles.posTagRow}>
-
-
-            {item.status === "Mastered" && (
-              <View style={styles.masteredTag}>
-                <Ionicons name="checkmark-circle" size={14} color="#34A853" />
-                <Text style={styles.masteredTagText}>Mastered</Text>
-              </View>
-            )}
-          </View>
-
-          <View style={styles.phoneticContainer}>
-            {item.phonetic || item.phonetic_text ? (
-              <View style={styles.pronunciationRow}>
-                <TouchableOpacity
-                  style={styles.audioButton}
-                  onPress={() => playPronunciation(item.phonetic)}
-                >
-                  <Ionicons name="volume-medium" size={16} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.phoneticText}>
-                  {item.phonetic_text || item.phonetic} (UK)
-                </Text>
-              </View>
-            ) : null}
-
-            {item.phonetic_am || item.phonetic_am_text ? (
-              <View style={styles.pronunciationRow}>
-                <TouchableOpacity
-                  style={styles.audioButtonTwo}
-                  onPress={() => playPronunciation(item.phonetic_am)}
-                >
-                  <Ionicons name="volume-medium" size={16} color="white" />
-                </TouchableOpacity>
-                <Text style={[styles.phoneticText, { marginLeft: 2 }]}>
-                  {item.phonetic_am_text || item.phonetic_am} (US)
-                </Text>
-              </View>
-            ) : null}
-          </View>
-
-          {item.senses && item.senses.length > 0 && (
-            <>
-              <Text style={styles.definitionText}>
-                {item.senses[0].definition}
-              </Text>
-
-
-            </>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   // Filter button component
   const FilterButton = ({

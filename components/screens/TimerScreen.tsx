@@ -19,7 +19,6 @@ import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Thiết lập kiểu dữ liệu
 interface Reminder {
   id: string;
   time: string;
@@ -72,7 +71,6 @@ export default function TimerScreen(): JSX.Element {
   const weekDays: string[] = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   const categories: string[] = ['Từ vựng', 'Ngữ pháp', 'Đọc hiểu', 'Nghe', 'Nói'];
 
-  // Hàm load dữ liệu từ local storage
   useEffect(() => {
     loadReminders();
     loadStreak();
@@ -94,19 +92,18 @@ export default function TimerScreen(): JSX.Element {
     try {
       const streak = await AsyncStorage.getItem('streakCount');
       const lastLearnedDay = await AsyncStorage.getItem('lastLearned');
-      
+
       if (streak) setStreakCount(parseInt(streak));
       if (lastLearnedDay) setLastLearned(lastLearnedDay);
-      
-      // Kiểm tra nếu đã quá 1 ngày kể từ lần học cuối
+
+
       if (lastLearnedDay) {
         const lastDate = new Date(lastLearnedDay);
         const today = new Date();
         const diffTime = Math.abs(today.getTime() - lastDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays > 1) {
-          // Reset streak nếu đã quá 1 ngày
           setStreakCount(0);
           await AsyncStorage.setItem('streakCount', '0');
         }
@@ -138,17 +135,17 @@ export default function TimerScreen(): JSX.Element {
 
   const updateStreak = async (): Promise<void> => {
     const today = new Date().toISOString().split('T')[0];
-    
+
     try {
       if (lastLearned !== today) {
         const newStreakCount = streakCount + 1;
         setStreakCount(newStreakCount);
         setLastLearned(today);
-        
+
         await AsyncStorage.setItem('streakCount', newStreakCount.toString());
         await AsyncStorage.setItem('lastLearned', today);
-        
-        // Cập nhật tiến độ hàng tuần
+
+
         const dayOfWeek = new Date().getDay();
         const newWeeklyProgress = [...weeklyProgress];
         newWeeklyProgress[dayOfWeek] += 1;
@@ -160,11 +157,10 @@ export default function TimerScreen(): JSX.Element {
     }
   };
 
-  // Xử lý thông báo
+
   const scheduleNotification = async (reminder: Reminder): Promise<string> => {
     const [hours, minutes] = reminder.time.split(':').map(num => parseInt(num));
-    
-    // Tạo trigger cho từng ngày trong tuần
+
     const triggers = [];
     if (reminder.days.monday) triggers.push(1);
     if (reminder.days.tuesday) triggers.push(2);
@@ -173,8 +169,8 @@ export default function TimerScreen(): JSX.Element {
     if (reminder.days.friday) triggers.push(5);
     if (reminder.days.saturday) triggers.push(6);
     if (reminder.days.sunday) triggers.push(0);
-    
-    // Chuẩn bị nội dung thông báo với ngẫu nhiên
+
+
     const messages = [
       "Đã đến giờ học tiếng Anh rồi! 🇬🇧",
       "Bạn ơi, hãy dành 10 phút học tiếng Anh nào!",
@@ -182,12 +178,11 @@ export default function TimerScreen(): JSX.Element {
       `Đã đến giờ học ${reminder.category} rồi!`,
       "Bạn còn nhớ cam kết học tiếng Anh không?",
     ];
-    
+
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    
-    // Đăng ký thông báo cho mỗi ngày đã chọn
+
     const notificationIds = [];
-    
+
     for (const weekDay of triggers) {
       const id = await Notifications.scheduleNotificationAsync({
         content: {
@@ -207,7 +202,7 @@ export default function TimerScreen(): JSX.Element {
       });
       notificationIds.push(id);
     }
-    
+
     return notificationIds.join(',');
   };
 
@@ -218,14 +213,13 @@ export default function TimerScreen(): JSX.Element {
     }
   };
 
-  // Xử lý thêm reminder mới
   const addReminder = async (): Promise<void> => {
-    const timeString = selectedTime.toLocaleTimeString([], { 
-      hour: '2-digit', 
+    const timeString = selectedTime.toLocaleTimeString([], {
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: false 
+      hour12: false
     });
-    
+
     const newReminder: Reminder = {
       id: Date.now().toString(),
       time: timeString,
@@ -233,39 +227,36 @@ export default function TimerScreen(): JSX.Element {
       days: { ...selectedDays },
       category: selectedCategory,
     };
-    
-    // Lên lịch thông báo
+
     const notificationId = await scheduleNotification(newReminder);
     newReminder.notificationId = notificationId;
-    
+
     const updatedReminders = [...reminders, newReminder];
     setReminders(updatedReminders);
     await saveReminders(updatedReminders);
-    
+
     setShowModal(false);
     Alert.alert('Thành công', `Đã tạo nhắc nhở học tiếng Anh lúc ${timeString}`);
   };
 
-  // Xử lý xóa reminder
   const deleteReminder = async (id: string): Promise<void> => {
     const reminderToDelete = reminders.find(item => item.id === id);
-    
+
     if (reminderToDelete && reminderToDelete.notificationId) {
       await cancelNotification(reminderToDelete.notificationId);
     }
-    
+
     const updatedReminders = reminders.filter(item => item.id !== id);
     setReminders(updatedReminders);
     await saveReminders(updatedReminders);
   };
 
-  // Xử lý bật/tắt reminder
+
   const toggleReminder = async (id: string): Promise<void> => {
     const updatedReminders = reminders.map(reminder => {
       if (reminder.id === id) {
         const updatedReminder = { ...reminder, active: !reminder.active };
-        
-        // Xử lý thông báo
+
         (async () => {
           if (updatedReminder.active) {
             if (updatedReminder.notificationId) {
@@ -277,17 +268,17 @@ export default function TimerScreen(): JSX.Element {
             await cancelNotification(updatedReminder.notificationId);
           }
         })();
-        
+
         return updatedReminder;
       }
       return reminder;
     });
-    
+
     setReminders(updatedReminders);
     await saveReminders(updatedReminders);
   };
 
-  // Xử lý chọn ngày
+
   const toggleDay = (day: keyof DaysObject): void => {
     setSelectedDays(prev => ({
       ...prev,
@@ -295,7 +286,7 @@ export default function TimerScreen(): JSX.Element {
     }));
   };
 
-  // Xử lý chọn thời gian
+
   const onTimeChange = (_: any, selectedDate?: Date): void => {
     setShowTimePicker(false);
     if (selectedDate) {
@@ -303,12 +294,11 @@ export default function TimerScreen(): JSX.Element {
     }
   };
 
-  // Hiển thị badge cho số ngày trong tuần đã chọn
   const getSelectedDaysCount = (): number => {
     return Object.values(selectedDays).filter(Boolean).length;
   };
 
-  // Mô phỏng hoàn thành bài học
+
   const simulateCompletedLesson = async (): Promise<void> => {
     await updateStreak();
     Alert.alert(
@@ -318,7 +308,6 @@ export default function TimerScreen(): JSX.Element {
     );
   };
 
-  // Hiển thị badge chỉ ra ngày trong tuần
   const renderDayBadge = (day: keyof DaysObject, label: string): JSX.Element => {
     return (
       <TouchableOpacity
@@ -338,7 +327,6 @@ export default function TimerScreen(): JSX.Element {
     );
   };
 
-  // Render streak indicator
   const renderStreakIndicator = (): JSX.Element => {
     return (
       <View style={styles.streakContainer}>
@@ -347,7 +335,7 @@ export default function TimerScreen(): JSX.Element {
           <Text style={styles.streakText}>{streakCount}</Text>
           <Text style={styles.streakLabel}>ngày</Text>
         </View>
-        
+
         <TouchableOpacity
           style={styles.completeButton}
           onPress={simulateCompletedLesson}
@@ -367,7 +355,7 @@ export default function TimerScreen(): JSX.Element {
           {weekDays.map((day, index) => (
             <View key={day} style={styles.progressDay}>
               <View style={styles.progressBarContainer}>
-                <View 
+                <View
                   style={[
                     styles.progressBar,
                     { height: `${Math.min(100, weeklyProgress[index] * 20)}%` }
@@ -382,12 +370,12 @@ export default function TimerScreen(): JSX.Element {
     );
   };
 
-  // Render danh sách các reminder
+  // Render list reminders
   const renderReminders = (): JSX.Element => {
     if (reminders.length === 0) {
       return (
         <View style={styles.emptyContainer}>
-          <Image 
+          <Image
             source={{ uri: 'https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg' }}
             style={styles.emptyImage}
           />
@@ -407,7 +395,7 @@ export default function TimerScreen(): JSX.Element {
                 <MaterialCommunityIcons name="clock-outline" size={22} color="#4b6cb7" />
                 <Text style={styles.reminderTime}>{reminder.time}</Text>
               </View>
-              
+
               <View style={styles.reminderDetails}>
                 <View style={styles.categoryTag}>
                   <Text style={styles.categoryText}>{reminder.category}</Text>
@@ -423,7 +411,7 @@ export default function TimerScreen(): JSX.Element {
                 </View>
               </View>
             </View>
-            
+
             <View style={styles.reminderActions}>
               <Switch
                 value={reminder.active}
@@ -431,7 +419,7 @@ export default function TimerScreen(): JSX.Element {
                 trackColor={{ false: '#D1D1D6', true: '#58CC02' }}
                 thumbColor="#FFFFFF"
               />
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.deleteButton}
                 onPress={() => deleteReminder(reminder.id)}
               >
@@ -444,7 +432,6 @@ export default function TimerScreen(): JSX.Element {
     );
   };
 
-  // Modal thêm reminder mới
   const renderAddReminderModal = (): JSX.Element => {
     return (
       <Modal
@@ -465,16 +452,16 @@ export default function TimerScreen(): JSX.Element {
             <ScrollView style={styles.modalScroll}>
               <View style={styles.fieldContainer}>
                 <Text style={styles.fieldLabel}>Chọn thời gian</Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.timePickerButton}
                   onPress={() => setShowTimePicker(true)}
                 >
                   <Ionicons name="time-outline" size={22} color="#4b6cb7" />
                   <Text style={styles.timePickerText}>
-                    {selectedTime.toLocaleTimeString([], { 
-                      hour: '2-digit', 
+                    {selectedTime.toLocaleTimeString([], {
+                      hour: '2-digit',
                       minute: '2-digit',
-                      hour12: false 
+                      hour12: false
                     })}
                   </Text>
                 </TouchableOpacity>
@@ -529,7 +516,7 @@ export default function TimerScreen(): JSX.Element {
               </View>
             </ScrollView>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.saveButton}
               onPress={addReminder}
             >
@@ -545,7 +532,7 @@ export default function TimerScreen(): JSX.Element {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Lịch học tiếng Anh</Text>
-        <Image 
+        <Image
           source={{ uri: 'https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg' }}
           style={styles.mascot}
         />
@@ -561,7 +548,7 @@ export default function TimerScreen(): JSX.Element {
         </ScrollView>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.addButton}
         onPress={() => setShowModal(true)}
       >
@@ -573,7 +560,6 @@ export default function TimerScreen(): JSX.Element {
   );
 }
 
-// Định nghĩa styles
 interface StylesProps {
   container: ViewStyle;
   header: ViewStyle;
