@@ -27,7 +27,7 @@ type MessageType = {
 
 // Set your Gemini API key here
 // In a production app, this should be securely stored using environment variables
-const GEMINI_API_KEY = 'AIzaSyAUnpXv8044WdbQe15Pbk5FNb53hBkC1qQ'; // Replace with your actual API key
+const GEMINI_API_KEY = ''; // Replace with your actual API key
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<MessageType[]>([
