@@ -8,15 +8,25 @@ import {
   Image,
   StatusBar,
   Dimensions,
+  Animated
 } from "react-native";
+import {useState, useEffect} from "react";
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
 import Header from "@/components/ui/Header";
 import { LinearGradient } from "expo-linear-gradient";
 import { tenses } from "@/data/tenses";
 import { router } from "expo-router";
-const { width } = Dimensions.get("window");
 
 export default function Tenses() {
+  const [animatedValue] = useState(new Animated.Value(0));
+  
+      useEffect(() => {
+          Animated.timing(animatedValue, {
+              toValue: 1,
+              duration: 800,
+              useNativeDriver: true,
+          }).start();
+      }, []);
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
@@ -32,30 +42,13 @@ export default function Tenses() {
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
           <Ionicons name="search" size={20} color="#777" />
-          <Text style={styles.searchPlaceholder}>Search tenses...</Text>
+          <Text style={styles.searchPlaceholder}>Tìm kiếm thì...</Text>
         </View>
         <TouchableOpacity style={styles.filterButton}>
           <Feather name="sliders" size={20} color="#4B79E4" />
         </TouchableOpacity>
       </View>
 
-      {/* Stats bar */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statValue}>12</Text>
-          <Text style={styles.statLabel}>Total</Text>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statValue}>5</Text>
-          <Text style={styles.statLabel}>Completed</Text>
-        </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statValue}>7</Text>
-          <Text style={styles.statLabel}>Remaining</Text>
-        </View>
-      </View>
 
       <ScrollView
         style={styles.grammarBox}
@@ -64,27 +57,24 @@ export default function Tenses() {
       >
         {/* Tenses Section */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Basic Tenses</Text>
+          <Text style={styles.sectionTitle}>Các thì cơ bản</Text>
           <TouchableOpacity>
-            <Text style={styles.seeAllButton}>See all</Text>
+            <Text style={styles.seeAllButton}></Text>
           </TouchableOpacity>
         </View>
 
         {tenses.map((tense, index) => (
           <TouchableOpacity
-            onPress={() => router.push(tense.link as string)}
+            onPress={() => router.push(tense.link.toString
+              ()
+            )}
             key={index}
             style={styles.boxItem}
           >
-            <LinearGradient
-              colors={getGradientColors(index)}
-              style={styles.iconBackground}
-            >
-              <Image
-                style={styles.boxIcon}
-                source={require("../../assets/images/grammar/tenses.png")}
-              />
-            </LinearGradient>
+             <View style={[styles.iconContainer, { backgroundColor: tense.bgColor }]}>
+             <Feather name={String(tense.icon)} size={22} color={tense.iconColor} />
+
+             </View>
 
             <View style={styles.textContainer}>
               <View style={styles.titleRow}>
@@ -197,7 +187,7 @@ export default function Tenses() {
 }
 
 // Helper functions for dynamic values
-function getGradientColors(index) {
+function getGradientColors(index: any) {
   const colorSets = [
     ["#4B79E4", "#3D6AD6"], // Blue
     ["#FF9500", "#FF7A00"], // Orange
@@ -275,6 +265,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 14,
   },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+},
   filterButton: {
     width: 44,
     height: 44,

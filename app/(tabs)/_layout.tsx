@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, Image } from "react-native";
 import { BookA, BookOpen, Timer, Bot } from "lucide-react-native";
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
@@ -13,10 +13,9 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors["light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -30,21 +29,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Từ vựng",
-          tabBarIcon: ({ color }) => <BookA color={color} size={26} />,
+          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/vocab.png')} style={{width: 28, height: 28}} />,
         }}
       />
        <Tabs.Screen
         name="grammar"
         options={{
           title: "Ngữ pháp",
-          tabBarIcon: ({ color }) => <BookOpen color={color} size={26} />,
+          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/grammar.png')} style={{width: 28, height: 28}} />,
         }}
       />
         <Tabs.Screen
         name="timer"
         options={{
           title: "Hẹn giờ",
-          tabBarIcon: ({ color }) => <Timer color={color} size={28} />,
+          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/streak.png')} style={{width: 28, height: 28}} />,
         }}
       />
       
@@ -52,7 +51,7 @@ export default function TabLayout() {
         name="chat"
         options={{
           title: "Lixi AI",
-          tabBarIcon: ({ color }) => <Bot color={color} size={28} />,
+          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/bot.png')} style={{width: 28, height: 28}} />,
         }}
       />
     </Tabs>

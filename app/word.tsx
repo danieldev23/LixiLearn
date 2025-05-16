@@ -50,57 +50,7 @@ type ParamList = {
 export default function WordDetailScreen() {
   const route = useRoute<RouteProp<ParamList, "WordDetail">>();
   const navigation = useNavigation();
-  const { word } = route.params || { 
-    word: {
-      id: "1",
-      word: "abandon",
-      pos: "verb",
-      phonetic_text: "/əˈbændən/",
-      phonetic_am_text: "/əˈbændən/",
-      senses: [
-        {
-          definition: "to leave somebody, especially somebody you are responsible for, with no intention of returning",
-          examples: [
-            { 
-              cf: "", 
-              x: "The baby had been abandoned by its mother." 
-            },
-            { 
-              cf: "", 
-              x: "People often simply abandon their pets when they go abroad." 
-            },
-            { 
-              cf: "", 
-              x: "'We have been abandoned to our fate,' said one resident." 
-            },
-            { 
-              cf: "", 
-              x: "The study showed a deep fear among the elderly of being abandoned to the care of strangers." 
-            }
-          ]
-        },
-        {
-          definition: "to leave a thing or place, especially because it is impossible or dangerous to stay",
-          examples: [
-            { 
-              cf: "", 
-              x: "Snow forced many drivers to abandon their vehicles." 
-            },
-            { 
-              cf: "", 
-              x: "He gave the order to abandon ship (= to leave the ship because it was sinking)." 
-            },
-            { 
-              cf: "", 
-              x: "They were forced to abandon their homes." 
-            }
-          ]
-        }
-      ],
-      status: "Mastered",
-      starred: true
-    }
-  };
+  const { word } = route.params;
   const [status, setStatus] = useState(word.status || "Unknown");
   const [isStarred, setIsStarred] = useState(word.starred || false);
   const [activeSection, setActiveSection] = useState("definition");
@@ -116,19 +66,14 @@ export default function WordDetailScreen() {
   };
 
   // Function to play pronunciation
-  const handlePlayPronunciation = (type) => {
+  const handlePlayPronunciation = (type: string) => {
     const pronunciationFile = type === "uk" ? word.phonetic : word.phonetic_am;
     playPronunciation(pronunciationFile);
   };
 
   // Format the part of speech
-  const formatPos = (pos) => {
+  const formatPos = (pos: string) => {
     return pos.charAt(0).toUpperCase() + pos.slice(1);
-  };
-
-  // Handle bottom tab navigation
-  const handleTabPress = (tabName) => {
-    setActiveSection(tabName);
   };
 
   return (

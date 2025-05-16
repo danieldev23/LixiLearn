@@ -41,15 +41,9 @@ export default function Grammar(): React.ReactElement {
         <Text style={styles.sectionTitle}>Các chủ đề cơ bản</Text>
 
         <TouchableOpacity style={styles.boxItem}>
-          <LinearGradient
-            colors={["#4B79E4", "#3D6AD6"]}
-            style={styles.iconBackground}
-          >
-            <Image
-              style={styles.boxIcon}
-              source={require("../../assets/images/grammar/tenses.png")}
-            />
-          </LinearGradient>
+          <View style={[styles.iconContainer, { backgroundColor: "#E5EDFF" }]}>
+          <Image source={require('@/assets/images/topics/tenses.png')} style={{width: 28, height: 28}} />
+          </View>
           <TouchableOpacity
             onPress={() => router.push("/tenses")}
             style={styles.textContainer}
@@ -67,15 +61,9 @@ export default function Grammar(): React.ReactElement {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.boxItem}>
-          <LinearGradient
-            colors={["#FF7676", "#F05454"]}
-            style={styles.iconBackground}
-          >
-            <Image
-              style={styles.boxIcon}
-              source={require("../../assets/images/grammar/sentences.png")}
-            />
-          </LinearGradient>
+          <View style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}>
+            <Image source={require('@/assets/images/topics/sentences.png')} style={{width: 28, height: 28}} />
+          </View>
           <TouchableOpacity onPress={() => router.push("/sentences")} style={styles.textContainer}>
             <Text style={styles.boxTitle}>Sentences (Các loại câu)</Text>
             <Text style={styles.boxSubTitle}>Sentences in English</Text>
@@ -92,15 +80,9 @@ export default function Grammar(): React.ReactElement {
         <Text style={styles.sectionTitle}>Chủ đề nâng cao</Text>
 
         <TouchableOpacity style={styles.boxItem}>
-          <LinearGradient
-            colors={["#4ECDC4", "#26A69A"]}
-            style={styles.iconBackground}
-          >
-            <Image
-              style={styles.boxIcon}
-              source={require("../../assets/images/grammar/words.png")}
-            />
-          </LinearGradient>
+          <View style={[styles.iconContainer, { backgroundColor: "#E5F5F3" }]}>
+          <Image source={require('@/assets/images/topics/words.png')} style={{width: 28, height: 28}} />
+          </View>
           <View style={styles.textContainer}>
             <Text style={styles.boxTitle}>Words (từ)</Text>
             <Text style={styles.boxSubTitle}>Words in English</Text>
@@ -115,15 +97,9 @@ export default function Grammar(): React.ReactElement {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.boxItem}>
-          <LinearGradient
-            colors={["#9370DB", "#8257DB"]}
-            style={styles.iconBackground}
-          >
-            <Image
-              style={styles.boxIcon}
-              source={require("../../assets/images/grammar/others.png")}
-            />
-          </LinearGradient>
+          <View style={[styles.iconContainer, { backgroundColor: "#F3E5F5" }]}>
+          <Image source={require('@/assets/images/topics/others.png')} style={{width: 28, height: 28}} />
+          </View>
           <View style={styles.textContainer}>
             <Text style={styles.boxTitle}>Others (Khác)</Text>
             <Text style={styles.boxSubTitle}>Other grammar topics</Text>
@@ -176,6 +152,14 @@ const styles = StyleSheet.create({
   starButton: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
   premiumBadge: {
     width: 22,
@@ -254,6 +238,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
+  },
+  featherIcon: {
+    alignSelf: 'center',
   },
   textContainer: {
     flex: 1,

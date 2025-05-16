@@ -5405,7 +5405,7 @@ react-native-gesture-handler@~2.24.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
-react-native-google-mobile-ads@^15.1.0:
+react-native-google-mobile-ads@^15.2.0:
   version "15.2.0"
   resolved "https://registry.yarnpkg.com/react-native-google-mobile-ads/-/react-native-google-mobile-ads-15.2.0.tgz#7cfc171c110f8241be42c9b80a82cdf3f650cc09"
   integrity sha512-dzWaJh/79eLotaBKxlLaUneP2OfuettM/1QpBdgGnHb++pLGTOWIdPqJsoYQvpHDgcIlJKgah9K7Kfzwe2AI7g==

@@ -1,71 +1,110 @@
-type Tense = {
-  title: string;
-  use: string;
-  link: string;
-};
-export const tenses: Tense[] = [
-  {
-    title: "Simple Present",
-    use: "S + to be/V + O",
-    link: "/tenses/simple_present",
-  },
-  {
-    title: "Present Continuous",
-    use: "S + to be + V-ing + O",
-    link: "/tenses/present_continuous",
-  },
-  {
-    title: "Present Perfect",
-    use: "S + have/has + V3 + O",
-    link: "/tenses/present_perfect",
-  },
-  {
-    title: "Present Perfect Continuous",
-    use: "S + have/has + been + V-ing + O",
-    link: "/tenses/present_perfect_continuous",
-  },
-  { title: "Simple Past", use: "S + V2 + O", link: "/tenses/simple_past" },
-  {
-    title: "Past Continuous",
-    use: "S + was/were + V-ing + O",
-    link: "/tenses/past_continuous",
-  },
-  {
-    title: "Past Perfect",
-    use: "S + had + V3 + O",
-    link: "/tenses/past_perfect",
-  },
-  {
-    title: "Past Perfect Continuous",
-    use: "S + had + been + V-ing + O",
-    link: "/tenses/past_perfect_continuous",
-  },
-  {
-    title: "Simple Future",
-    use: "S + will + V + O",
-    link: "/tenses/future_simple",
-  },
-  {
-    title: "Future Continuous",
-    use: "S + will + be + V-ing + O",
-    link: "/tenses/future_continuous",
-  },
-  {
-    title: "Future Perfect",
-    use: "S + will + have + V3 + O",
-    link: "/tenses/future_perfect",
-  },
-  {
-    title: "Future Perfect Continuous",
-    use: "S + will + have + been + V-ing + O",
-    link: "/tenses/future_perfect_continuous",
-  },
-  {
-    title: "Near Future",
-    use: "S + to be + going to + V + O",
-    link: "/tenses/near_future",
-  },
-];
+
+export const tenses = [
+    {
+      title: "Simple Present",
+      use: "S + to be/V + O",
+      link: "/tenses/simple_present",
+      icon: 'repeat',
+      bgColor: '#EFF6FF',
+      iconColor: '#2563EB'
+    },
+    {
+      title: "Present Continuous",
+      use: "S + to be + V-ing + O",
+      link: "/tenses/present_continuous",
+      icon: 'activity',
+      bgColor: '#F0FDF4',
+      iconColor: '#16A34A'
+    },
+    {
+      title: "Present Perfect",
+      use: "S + have/has + V3 + O",
+      link: "/tenses/present_perfect",
+      icon: 'check-circle',
+      bgColor: '#FFF7ED',
+      iconColor: '#D97706'
+    },
+    {
+      title: "Present Perfect Continuous",
+      use: "S + have/has + been + V-ing + O",
+      link: "/tenses/present_perfect_continuous",
+      icon: 'clock',
+      bgColor: '#F5F3FF',
+      iconColor: '#7C3AED'
+    },
+    { 
+      title: "Simple Past", 
+      use: "S + V2 + O", 
+      link: "/tenses/simple_past",
+      icon: 'power',
+      bgColor: '#FEF2F2',
+      iconColor: '#DC2626'
+    },
+    {
+      title: "Past Continuous",
+      use: "S + was/were + V-ing + O",
+      link: "/tenses/past_continuous",
+      icon: 'trending-down',
+      bgColor: '#F0F9FF',
+      iconColor: '#0284C7'
+    },
+    {
+      title: "Past Perfect",
+      use: "S + had + V3 + O",
+      link: "/tenses/past_perfect",
+      icon: 'corner-up-left',
+      bgColor: '#F5FBFF',
+      iconColor: '#0369A1'
+    },
+    {
+      title: "Past Perfect Continuous",
+      use: "S + had + been + V-ing + O",
+      link: "/tenses/past_perfect_continuous",
+      icon: 'rotate-ccw',
+      bgColor: '#FFFBEB',
+      iconColor: '#B45309'
+    },
+    {
+      title: "Simple Future",
+      use: "S + will + V + O",
+      link: "/tenses/future_simple",
+      icon: 'arrow-up-right',
+      bgColor: '#EEF2FF',
+      iconColor: '#4338CA'
+    },
+    {
+      title: "Future Continuous",
+      use: "S + will + be + V-ing + O",
+      link: "/tenses/future_continuous",
+      icon: 'trending-up',
+      bgColor: '#F0FDF9',
+      iconColor: '#047857'
+    },
+    {
+      title: "Future Perfect",
+      use: "S + will + have + V3 + O",
+      link: "/tenses/future_perfect",
+      icon: 'target',
+      bgColor: '#FDF2F8',
+      iconColor: '#BE185D'
+    },
+    {
+      title: "Future Perfect Continuous",
+      use: "S + will + have + been + V-ing + O",
+      link: "/tenses/future_perfect_continuous",
+      icon: 'compass',
+      bgColor: '#FAFAF9',
+      iconColor: '#52525B'
+    },
+    {
+      title: "Near Future",
+      use: "S + to be + going to + V + O",
+      link: "/tenses/near_future",
+      icon: 'navigation',
+      bgColor: '#F5F5F4',
+      iconColor: '#44403C'
+    },
+  ];
 
 export const getTense = (tense: string): string | undefined => {
   switch (tense) {

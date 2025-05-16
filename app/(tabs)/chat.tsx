@@ -27,7 +27,7 @@ type MessageType = {
 
 // Set your Gemini API key here
 // In a production app, this should be securely stored using environment variables
-const GEMINI_API_KEY = ''; // Replace with your actual API key
+const GEMINI_API_KEY = 'AIzaSyAUnpXv8044WdbQe15Pbk5FNb53hBkC1qQ'; // Replace with your actual API key
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<MessageType[]>([
@@ -207,7 +207,7 @@ export default function ChatScreen() {
         >
           <View style={styles.inputWrapper}>
             <TouchableOpacity style={styles.attachButton}>
-              <Ionicons name="add-circle-outline" size={24} color="#6366f1" />
+              <Ionicons name="add-circle-outline" size={24} color="#4B79E4" />
             </TouchableOpacity>
 
             <TextInput
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#4B79E4',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   userBubble: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#4B79E4',
     borderBottomRightRadius: 4,
   },
   botBubble: {
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   sendButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#4B79E4',
     borderRadius: 20,
     width: 32,
     height: 32,
