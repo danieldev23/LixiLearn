@@ -60,13 +60,13 @@ Here are some screenshots of the LixiLearn app:
 <p align="center">
   <img src="images/5.png" alt="Feature 5" width="20%">
   <img src="images/6.png" alt="Feature 6" width="20%">
-    <img src="images/7.png" alt="Feature 5" width="20%">
-  <img src="images/8.png" alt="Feature 6" width="20%">
+    <img src="images/7.PNG" alt="Feature 5" width="20%">
+  <img src="images/8.PNG" alt="Feature 6" width="20%">
 </p>
 <br>
 <p align="center">
-    <img src="images/9.png" alt="Feature 5" width="20%">
-  <img src="images/10.png" alt="Feature 6" width="20%">
+    <img src="images/9.PNG" alt="Feature 5" width="20%">
+  <img src="images/10.PNG" alt="Feature 6" width="20%">
 </p>
 
 ## 📬 Contact
