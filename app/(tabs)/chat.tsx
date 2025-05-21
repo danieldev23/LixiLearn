@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -12,10 +12,10 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // You'll need to install expo-vector-icons
-import axios from 'axios';
-import Header from '@/components/ui/Header';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // You'll need to install expo-vector-icons
+import axios from "axios";
+import Header from "@/components/ui/Header";
 
 // Message types
 type MessageType = {
@@ -27,18 +27,18 @@ type MessageType = {
 
 // Set your Gemini API key here
 // In a production app, this should be securely stored using environment variables
-const GEMINI_API_KEY = 'AIzaSyAUnpXv8044WdbQe15Pbk5FNb53hBkC1qQ'; // Replace with your actual API key
+const GEMINI_API_KEY = "AIzaSyAUnpXv8044WdbQe15Pbk5FNb53hBkC1qQ"; // Replace with your actual API key
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<MessageType[]>([
     {
-      id: '1',
-      text: 'Hehe, chào cậu iu! 💖 Mình là LixiLearn AI, được anh Huy đẹp chai training để làm bạn đồng hành siêu cute của cậu nè! 🥰 Mình giúp cậu học tiếng Anh, tám chuyện, và cười nhiều hơn mỗi ngày đó! 😘 Nói mình nghe cậu cần giúp gì nha! ^^',     
+      id: "1",
+      text: "Hehe, chào cậu iu! 💖 Mình là LixiLearn AI, được anh Huy đẹp zaii training để làm bạn đồng hành siêu cute của cậu nè! 🥰 Mình giúp cậu học tiếng Anh, tám chuyện, và cười nhiều hơn mỗi ngày đó! 😘 Nói mình nghe cậu cần giúp gì nha! ^^",
       isUser: false,
       timestamp: new Date(),
     },
   ]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
@@ -67,34 +67,36 @@ export default function ChatScreen() {
   
                           Luôn giữ lời nói ngọt ngào, dễ thương và có chút nghịch ngợm nhé! 🌸
   
-                          Tin nhắn từ người dùng: ${userMessage}`
-              }
-            ]
-          }
-        ]
+                          Tin nhắn từ người dùng: ${userMessage}`,
+              },
+            ],
+          },
+        ],
       });
 
       // Configure the API request
       const config = {
-        method: 'post',
+        method: "post",
         maxBodyLength: Infinity,
         url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        data: data
+        data: data,
       };
 
       // Make the API request
       const response = await axios.request(config);
 
       // Extract the response text
-      if (response.data &&
+      if (
+        response.data &&
         response.data.candidates &&
         response.data.candidates[0] &&
         response.data.candidates[0].content &&
         response.data.candidates[0].content.parts &&
-        response.data.candidates[0].content.parts[0]) {
+        response.data.candidates[0].content.parts[0]
+      ) {
         setIsLoading(false);
         return response.data.candidates[0].content.parts[0].text;
       } else {
@@ -102,17 +104,15 @@ export default function ChatScreen() {
         return "Ơ kìa, tớ chưa nghe rõ cậu nói gì! Mình thử lại nha? 💖";
       }
     } catch (error) {
-      console.error('Error fetching response:', error);
+      console.error("Error fetching response:", error);
       setIsLoading(false);
       return "Ôi không, có chút trục trặc rồi! Nhưng đừng lo, tớ vẫn luôn ở đây giúp cậu học tiếng Anh nè! 🌸";
     }
-
-
   };
 
   // Function to handle sending messages
   const handleSend = async () => {
-    if (inputText.trim() === '') return;
+    if (inputText.trim() === "") return;
 
     // Add user message
     const userMessage = {
@@ -123,7 +123,7 @@ export default function ChatScreen() {
     };
 
     setMessages((prevMessages) => [...prevMessages, userMessage]);
-    setInputText('');
+    setInputText("");
 
     // Get bot response from Gemini API
     const botResponse = await getGeminiResponse(inputText);
@@ -148,29 +148,42 @@ export default function ChatScreen() {
 
   // Function to format timestamp
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   // Render chat message
   const renderMessage = ({ item }: { item: MessageType }) => (
-    <View style={item.isUser ? styles.userMessageContainer : styles.botMessageContainer}>
+    <View
+      style={
+        item.isUser ? styles.userMessageContainer : styles.botMessageContainer
+      }
+    >
       {!item.isUser && (
         <View style={styles.avatarContainer}>
-          <Image source={require('@/assets/images/lixi-ai.png')} resizeMode="cover"  style={styles.avatar} />
-
+          <Image
+            source={require("@/assets/images/lixi-ai.png")}
+            resizeMode="cover"
+            style={styles.avatar}
+          />
         </View>
       )}
-      <View style={[
-        styles.messageBubble,
-        item.isUser ? styles.userBubble : styles.botBubble
-      ]}>
-        <Text style={item.isUser ? styles.userMessageText : styles.botMessageText}>
+      <View
+        style={[
+          styles.messageBubble,
+          item.isUser ? styles.userBubble : styles.botBubble,
+        ]}
+      >
+        <Text
+          style={item.isUser ? styles.userMessageText : styles.botMessageText}
+        >
           {item.text}
         </Text>
-        <Text style={[
-          styles.timestamp,
-          item.isUser ? styles.userTimestamp : styles.botTimestamp
-        ]}>
+        <Text
+          style={[
+            styles.timestamp,
+            item.isUser ? styles.userTimestamp : styles.botTimestamp,
+          ]}
+        >
           {formatTime(item.timestamp)}
         </Text>
       </View>
@@ -180,7 +193,7 @@ export default function ChatScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
-      <Header title='LixiLearn AI🤖' />
+      <Header title="LixiLearn AI🤖" />
 
       <View style={styles.container}>
         <FlatList
@@ -201,7 +214,7 @@ export default function ChatScreen() {
 
         {/* Input area */}
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={100}
           style={styles.inputContainer}
         >
@@ -221,11 +234,18 @@ export default function ChatScreen() {
             />
 
             <TouchableOpacity
-              style={[styles.sendButton, !inputText.trim() && styles.sendButtonDisabled]}
+              style={[
+                styles.sendButton,
+                !inputText.trim() && styles.sendButtonDisabled,
+              ]}
               onPress={handleSend}
               disabled={!inputText.trim()}
             >
-              <Ionicons name="send" size={20} color={inputText.trim() ? "#ffffff" : "#a1a1aa"} />
+              <Ionicons
+                name="send"
+                size={20}
+                color={inputText.trim() ? "#ffffff" : "#a1a1aa"}
+              />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -237,19 +257,19 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderBottomColor: "#e5e7eb",
+    backgroundColor: "#ffffff",
   },
   backButton: {
     padding: 4,
@@ -260,12 +280,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#10b981',
+    color: "#10b981",
   },
   menuButton: {
     padding: 4,
@@ -275,33 +295,33 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   userMessageContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginBottom: 12,
   },
   botMessageContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
   },
   avatarContainer: {
     marginRight: 8,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   avatar: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#4B79E4',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#4B79E4",
+    justifyContent: "center",
+    alignItems: "center",
   },
   avatarText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
     fontSize: 14,
   },
   messageBubble: {
-    maxWidth: '75%',
+    maxWidth: "75%",
     padding: 12,
     borderRadius: 16,
     elevation: 1,
@@ -310,55 +330,55 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   userBubble: {
-    backgroundColor: '#4B79E4',
+    backgroundColor: "#4B79E4",
     borderBottomRightRadius: 4,
   },
   botBubble: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderBottomLeftRadius: 4,
   },
   userMessageText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
   },
   botMessageText: {
-    color: '#1f2937',
+    color: "#1f2937",
     fontSize: 16,
   },
   timestamp: {
     fontSize: 10,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginTop: 4,
   },
   userTimestamp: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
   },
   botTimestamp: {
-    color: 'rgba(31, 41, 55, 0.5)',
+    color: "rgba(31, 41, 55, 0.5)",
   },
   typingIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 8,
     marginLeft: 16,
     marginBottom: 8,
   },
   typingText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
     marginRight: 8,
   },
   inputContainer: {
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: "#e5e7eb",
     padding: 8,
     marginBottom: 80,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f3f4f6",
     borderRadius: 24,
     paddingHorizontal: 12,
     paddingVertical: 14,
@@ -369,19 +389,19 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#1f2937',
+    color: "#1f2937",
     maxHeight: 120,
     paddingHorizontal: 12,
   },
   sendButton: {
-    backgroundColor: '#4B79E4',
+    backgroundColor: "#4B79E4",
     borderRadius: 20,
     width: 32,
     height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   sendButtonDisabled: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
   },
 });

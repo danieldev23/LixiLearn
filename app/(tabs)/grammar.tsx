@@ -14,8 +14,6 @@ import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import Header from "@/components/ui/Header";
-const { width } = Dimensions.get("window");
-
 export default function Grammar(): React.ReactElement {
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -42,7 +40,10 @@ export default function Grammar(): React.ReactElement {
 
         <TouchableOpacity style={styles.boxItem}>
           <View style={[styles.iconContainer, { backgroundColor: "#E5EDFF" }]}>
-          <Image source={require('@/assets/images/topics/tenses.png')} style={{width: 28, height: 28}} />
+            <Image
+              source={require("@/assets/images/topics/tenses.png")}
+              style={{ width: 28, height: 28 }}
+            />
           </View>
           <TouchableOpacity
             onPress={() => router.push("/tenses")}
@@ -62,9 +63,15 @@ export default function Grammar(): React.ReactElement {
 
         <TouchableOpacity style={styles.boxItem}>
           <View style={[styles.iconContainer, { backgroundColor: "#FFE5E5" }]}>
-            <Image source={require('@/assets/images/topics/sentences.png')} style={{width: 28, height: 28}} />
+            <Image
+              source={require("@/assets/images/topics/sentences.png")}
+              style={{ width: 28, height: 28 }}
+            />
           </View>
-          <TouchableOpacity onPress={() => router.push("/sentences")} style={styles.textContainer}>
+          <TouchableOpacity
+            onPress={() => router.push("/sentences")}
+            style={styles.textContainer}
+          >
             <Text style={styles.boxTitle}>Sentences (Các loại câu)</Text>
             <Text style={styles.boxSubTitle}>Sentences in English</Text>
             <View style={styles.progressContainer}>
@@ -77,7 +84,7 @@ export default function Grammar(): React.ReactElement {
           <MaterialIcons name="keyboard-arrow-right" size={24} color="#888" />
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Chủ đề nâng cao</Text>
+        {/* <Text style={styles.sectionTitle}>Chủ đề nâng cao</Text>
 
         <TouchableOpacity style={styles.boxItem}>
           <View style={[styles.iconContainer, { backgroundColor: "#E5F5F3" }]}>
@@ -111,7 +118,7 @@ export default function Grammar(): React.ReactElement {
             </View>
           </View>
           <MaterialIcons name="keyboard-arrow-right" size={24} color="#888" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.newGrammarSection}>
           <LinearGradient
@@ -157,8 +164,8 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 16,
   },
   premiumBadge: {
@@ -240,7 +247,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   featherIcon: {
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   textContainer: {
     flex: 1,

@@ -40,32 +40,33 @@ export default function RootLayout() {
           name="word"
           options={{
             title: "Word Details",
-            headerShown: false
-
+            headerShown: false,
           }}
         />
         <Stack.Screen
           name="tenses/index"
           options={{
             title: "Tenses",
-            headerShown: false
+            headerShown: false,
           }}
         />
         <Stack.Screen
           name="sentences/index"
           options={{
             title: "Senses",
-            headerShown: false
+            headerShown: false,
           }}
         />
-        <Stack.Screen name="tenses/[tense]"
+        <Stack.Screen
+          name="tenses/[tense]"
           options={() => ({
-            headerShown: false
+            headerShown: false,
           })}
         />
-        <Stack.Screen name="sentences/[sentence]"
+        <Stack.Screen
+          name="sentences/[sentence]"
           options={() => ({
-            headerShown: false
+            headerShown: false,
           })}
         />
       </Stack>

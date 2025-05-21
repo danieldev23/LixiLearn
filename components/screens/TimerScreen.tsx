@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,11 +13,15 @@ import {
   ViewStyle,
   TextStyle,
   ImageStyle,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as Notifications from 'expo-notifications';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Ionicons,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 interface Reminder {
   id: string;
@@ -46,8 +50,6 @@ interface DaysObject {
   sunday: boolean;
 }
 
-
-
 export default function TimerScreen(): JSX.Element {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
@@ -56,7 +58,9 @@ export default function TimerScreen(): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [streakCount, setStreakCount] = useState<number>(0);
   const [lastLearned, setLastLearned] = useState<string | null>(null);
-  const [weeklyProgress, setWeeklyProgress] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [weeklyProgress, setWeeklyProgress] = useState<number[]>([
+    0, 0, 0, 0, 0, 0, 0,
+  ]);
   const [selectedDays, setSelectedDays] = useState<DaysObject>({
     monday: true,
     tuesday: true,
@@ -66,10 +70,16 @@ export default function TimerScreen(): JSX.Element {
     saturday: true,
     sunday: true,
   });
-  const [selectedCategory, setSelectedCategory] = useState<string>('Từ vựng');
+  const [selectedCategory, setSelectedCategory] = useState<string>("Từ vựng");
 
-  const weekDays: string[] = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-  const categories: string[] = ['Từ vựng', 'Ngữ pháp', 'Đọc hiểu', 'Nghe', 'Nói'];
+  const weekDays: string[] = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+  const categories: string[] = [
+    "Từ vựng",
+    "Ngữ pháp",
+    "Đọc hiểu",
+    "Nghe",
+    "Nói",
+  ];
 
   useEffect(() => {
     loadReminders();
@@ -79,23 +89,22 @@ export default function TimerScreen(): JSX.Element {
 
   const loadReminders = async (): Promise<void> => {
     try {
-      const savedReminders = await AsyncStorage.getItem('englishReminders');
+      const savedReminders = await AsyncStorage.getItem("englishReminders");
       if (savedReminders) {
         setReminders(JSON.parse(savedReminders));
       }
     } catch (error) {
-      console.error('Lỗi khi tải reminders:', error);
+      console.error("Lỗi khi tải reminders:", error);
     }
   };
 
   const loadStreak = async (): Promise<void> => {
     try {
-      const streak = await AsyncStorage.getItem('streakCount');
-      const lastLearnedDay = await AsyncStorage.getItem('lastLearned');
+      const streak = await AsyncStorage.getItem("streakCount");
+      const lastLearnedDay = await AsyncStorage.getItem("lastLearned");
 
       if (streak) setStreakCount(parseInt(streak));
       if (lastLearnedDay) setLastLearned(lastLearnedDay);
-
 
       if (lastLearnedDay) {
         const lastDate = new Date(lastLearnedDay);
@@ -105,36 +114,39 @@ export default function TimerScreen(): JSX.Element {
 
         if (diffDays > 1) {
           setStreakCount(0);
-          await AsyncStorage.setItem('streakCount', '0');
+          await AsyncStorage.setItem("streakCount", "0");
         }
       }
     } catch (error) {
-      console.error('Lỗi khi tải streak:', error);
+      console.error("Lỗi khi tải streak:", error);
     }
   };
 
   const loadWeeklyProgress = async (): Promise<void> => {
     try {
-      const progress = await AsyncStorage.getItem('weeklyProgress');
+      const progress = await AsyncStorage.getItem("weeklyProgress");
       if (progress) {
         setWeeklyProgress(JSON.parse(progress));
       }
     } catch (error) {
-      console.error('Lỗi khi tải tuần tiến độ:', error);
+      console.error("Lỗi khi tải tuần tiến độ:", error);
     }
   };
 
   // Lưu dữ liệu vào local storage
   const saveReminders = async (updatedReminders: Reminder[]): Promise<void> => {
     try {
-      await AsyncStorage.setItem('englishReminders', JSON.stringify(updatedReminders));
+      await AsyncStorage.setItem(
+        "englishReminders",
+        JSON.stringify(updatedReminders)
+      );
     } catch (error) {
-      console.error('Lỗi khi lưu reminders:', error);
+      console.error("Lỗi khi lưu reminders:", error);
     }
   };
 
   const updateStreak = async (): Promise<void> => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
 
     try {
       if (lastLearned !== today) {
@@ -142,24 +154,27 @@ export default function TimerScreen(): JSX.Element {
         setStreakCount(newStreakCount);
         setLastLearned(today);
 
-        await AsyncStorage.setItem('streakCount', newStreakCount.toString());
-        await AsyncStorage.setItem('lastLearned', today);
-
+        await AsyncStorage.setItem("streakCount", newStreakCount.toString());
+        await AsyncStorage.setItem("lastLearned", today);
 
         const dayOfWeek = new Date().getDay();
         const newWeeklyProgress = [...weeklyProgress];
         newWeeklyProgress[dayOfWeek] += 1;
         setWeeklyProgress(newWeeklyProgress);
-        await AsyncStorage.setItem('weeklyProgress', JSON.stringify(newWeeklyProgress));
+        await AsyncStorage.setItem(
+          "weeklyProgress",
+          JSON.stringify(newWeeklyProgress)
+        );
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật streak:', error);
+      console.error("Lỗi khi cập nhật streak:", error);
     }
   };
 
-
   const scheduleNotification = async (reminder: Reminder): Promise<string> => {
-    const [hours, minutes] = reminder.time.split(':').map(num => parseInt(num));
+    const [hours, minutes] = reminder.time
+      .split(":")
+      .map((num) => parseInt(num));
 
     const triggers = [];
     if (reminder.days.monday) triggers.push(1);
@@ -169,7 +184,6 @@ export default function TimerScreen(): JSX.Element {
     if (reminder.days.friday) triggers.push(5);
     if (reminder.days.saturday) triggers.push(6);
     if (reminder.days.sunday) triggers.push(0);
-
 
     const messages = [
       "Đã đến giờ học tiếng Anh rồi! 🇬🇧",
@@ -188,12 +202,12 @@ export default function TimerScreen(): JSX.Element {
         content: {
           title: "⏰ LixiLearn AI nhắc bạn học tiếng Anh!",
           body: randomMessage,
-          sound: '1.wav',
+          sound: "1.wav",
           badge: 1,
-          data: { screen: 'Learning' },
+          data: { screen: "Learning" },
         },
         trigger: {
-          type: 'calendar',
+          type: "calendar",
           hour: hours,
           minute: minutes,
           weekday: weekDay,
@@ -203,11 +217,11 @@ export default function TimerScreen(): JSX.Element {
       notificationIds.push(id);
     }
 
-    return notificationIds.join(',');
+    return notificationIds.join(",");
   };
 
   const cancelNotification = async (notificationId: string): Promise<void> => {
-    const ids = notificationId.split(',');
+    const ids = notificationId.split(",");
     for (const id of ids) {
       await Notifications.cancelScheduledNotificationAsync(id);
     }
@@ -215,9 +229,9 @@ export default function TimerScreen(): JSX.Element {
 
   const addReminder = async (): Promise<void> => {
     const timeString = selectedTime.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     });
 
     const newReminder: Reminder = {
@@ -236,24 +250,26 @@ export default function TimerScreen(): JSX.Element {
     await saveReminders(updatedReminders);
 
     setShowModal(false);
-    Alert.alert('Thành công', `Đã tạo nhắc nhở học tiếng Anh lúc ${timeString}`);
+    Alert.alert(
+      "Thành công",
+      `Đã tạo nhắc nhở học tiếng Anh lúc ${timeString}`
+    );
   };
 
   const deleteReminder = async (id: string): Promise<void> => {
-    const reminderToDelete = reminders.find(item => item.id === id);
+    const reminderToDelete = reminders.find((item) => item.id === id);
 
     if (reminderToDelete && reminderToDelete.notificationId) {
       await cancelNotification(reminderToDelete.notificationId);
     }
 
-    const updatedReminders = reminders.filter(item => item.id !== id);
+    const updatedReminders = reminders.filter((item) => item.id !== id);
     setReminders(updatedReminders);
     await saveReminders(updatedReminders);
   };
 
-
   const toggleReminder = async (id: string): Promise<void> => {
-    const updatedReminders = reminders.map(reminder => {
+    const updatedReminders = reminders.map((reminder) => {
       if (reminder.id === id) {
         const updatedReminder = { ...reminder, active: !reminder.active };
 
@@ -262,7 +278,9 @@ export default function TimerScreen(): JSX.Element {
             if (updatedReminder.notificationId) {
               await cancelNotification(updatedReminder.notificationId);
             }
-            const newNotificationId = await scheduleNotification(updatedReminder);
+            const newNotificationId = await scheduleNotification(
+              updatedReminder
+            );
             updatedReminder.notificationId = newNotificationId;
           } else if (updatedReminder.notificationId) {
             await cancelNotification(updatedReminder.notificationId);
@@ -278,14 +296,12 @@ export default function TimerScreen(): JSX.Element {
     await saveReminders(updatedReminders);
   };
 
-
   const toggleDay = (day: keyof DaysObject): void => {
-    setSelectedDays(prev => ({
+    setSelectedDays((prev) => ({
       ...prev,
-      [day]: !prev[day]
+      [day]: !prev[day],
     }));
   };
-
 
   const onTimeChange = (_: any, selectedDate?: Date): void => {
     setShowTimePicker(false);
@@ -298,29 +314,33 @@ export default function TimerScreen(): JSX.Element {
     return Object.values(selectedDays).filter(Boolean).length;
   };
 
-
   const simulateCompletedLesson = async (): Promise<void> => {
     await updateStreak();
     Alert.alert(
-      'Bài học hoàn thành!',
+      "Bài học hoàn thành!",
       `Chúc mừng! Bạn đã duy trì ${streakCount} ngày liên tiếp.`,
-      [{ text: 'Tuyệt vời!' }]
+      [{ text: "Tuyệt vời!" }]
     );
   };
 
-  const renderDayBadge = (day: keyof DaysObject, label: string): JSX.Element => {
+  const renderDayBadge = (
+    day: keyof DaysObject,
+    label: string
+  ): JSX.Element => {
     return (
       <TouchableOpacity
         style={[
           styles.dayBadge,
-          selectedDays[day] ? styles.dayBadgeSelected : null
+          selectedDays[day] ? styles.dayBadgeSelected : null,
         ]}
         onPress={() => toggleDay(day)}
       >
-        <Text style={[
-          styles.dayBadgeText,
-          selectedDays[day] ? styles.dayBadgeTextSelected : null
-        ]}>
+        <Text
+          style={[
+            styles.dayBadgeText,
+            selectedDays[day] ? styles.dayBadgeTextSelected : null,
+          ]}
+        >
           {label}
         </Text>
       </TouchableOpacity>
@@ -340,7 +360,9 @@ export default function TimerScreen(): JSX.Element {
           style={styles.completeButton}
           onPress={simulateCompletedLesson}
         >
-          <Text style={styles.completeButtonText}>Hoàn thành bài học hôm nay</Text>
+          <Text style={styles.completeButtonText}>
+            Hoàn thành bài học hôm nay
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -358,7 +380,7 @@ export default function TimerScreen(): JSX.Element {
                 <View
                   style={[
                     styles.progressBar,
-                    { height: `${Math.min(100, weeklyProgress[index] * 20)}%` }
+                    { height: `${Math.min(100, weeklyProgress[index] * 20)}%` },
                   ]}
                 />
               </View>
@@ -376,7 +398,9 @@ export default function TimerScreen(): JSX.Element {
       return (
         <View style={styles.emptyContainer}>
           <Image
-            source={{ uri: 'https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg' }}
+            source={{
+              uri: "https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg",
+            }}
             style={styles.emptyImage}
           />
           <Text style={styles.emptyText}>
@@ -392,7 +416,11 @@ export default function TimerScreen(): JSX.Element {
           <View key={reminder.id} style={styles.reminderItem}>
             <View style={styles.reminderInfo}>
               <View style={styles.reminderTimeContainer}>
-                <MaterialCommunityIcons name="clock-outline" size={22} color="#4b6cb7" />
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={22}
+                  color="#4b6cb7"
+                />
                 <Text style={styles.reminderTime}>{reminder.time}</Text>
               </View>
 
@@ -401,13 +429,13 @@ export default function TimerScreen(): JSX.Element {
                   <Text style={styles.categoryText}>{reminder.category}</Text>
                 </View>
                 <View style={styles.daysContainer}>
-                  {Object.entries(reminder.days).map(([key, value], index) => (
+                  {Object.entries(reminder.days).map(([key, value], index) =>
                     value ? (
                       <Text key={key} style={styles.dayIndicator}>
                         {weekDays[(index + 1) % 7]}
                       </Text>
                     ) : null
-                  ))}
+                  )}
                 </View>
               </View>
             </View>
@@ -416,7 +444,7 @@ export default function TimerScreen(): JSX.Element {
               <Switch
                 value={reminder.active}
                 onValueChange={() => toggleReminder(reminder.id)}
-                trackColor={{ false: '#D1D1D6', true: '#58CC02' }}
+                trackColor={{ false: "#D1D1D6", true: "#58CC02" }}
                 thumbColor="#FFFFFF"
               />
               <TouchableOpacity
@@ -459,9 +487,9 @@ export default function TimerScreen(): JSX.Element {
                   <Ionicons name="time-outline" size={22} color="#4b6cb7" />
                   <Text style={styles.timePickerText}>
                     {selectedTime.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
                     })}
                   </Text>
                 </TouchableOpacity>
@@ -471,7 +499,7 @@ export default function TimerScreen(): JSX.Element {
                 <DateTimePicker
                   value={selectedTime}
                   mode="time"
-                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
                   onChange={onTimeChange}
                 />
               )}
@@ -479,13 +507,13 @@ export default function TimerScreen(): JSX.Element {
               <View style={styles.fieldContainer}>
                 <Text style={styles.fieldLabel}>Chọn ngày trong tuần</Text>
                 <View style={styles.daysSelection}>
-                  {renderDayBadge('monday', 'T2')}
-                  {renderDayBadge('tuesday', 'T3')}
-                  {renderDayBadge('wednesday', 'T4')}
-                  {renderDayBadge('thursday', 'T5')}
-                  {renderDayBadge('friday', 'T6')}
-                  {renderDayBadge('saturday', 'T7')}
-                  {renderDayBadge('sunday', 'CN')}
+                  {renderDayBadge("monday", "T2")}
+                  {renderDayBadge("tuesday", "T3")}
+                  {renderDayBadge("wednesday", "T4")}
+                  {renderDayBadge("thursday", "T5")}
+                  {renderDayBadge("friday", "T6")}
+                  {renderDayBadge("saturday", "T7")}
+                  {renderDayBadge("sunday", "CN")}
                 </View>
                 <Text style={styles.daysSelected}>
                   Đã chọn {getSelectedDaysCount()} ngày
@@ -494,20 +522,30 @@ export default function TimerScreen(): JSX.Element {
 
               <View style={styles.fieldContainer}>
                 <Text style={styles.fieldLabel}>Chọn kỹ năng</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
-                  {categories.map(category => (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={styles.categoriesContainer}
+                >
+                  {categories.map((category) => (
                     <TouchableOpacity
                       key={category}
                       style={[
                         styles.categoryBadge,
-                        selectedCategory === category ? styles.categorySelected : null
+                        selectedCategory === category
+                          ? styles.categorySelected
+                          : null,
                       ]}
                       onPress={() => setSelectedCategory(category)}
                     >
-                      <Text style={[
-                        styles.categoryBadgeText,
-                        selectedCategory === category ? styles.categorySelectedText : null
-                      ]}>
+                      <Text
+                        style={[
+                          styles.categoryBadgeText,
+                          selectedCategory === category
+                            ? styles.categorySelectedText
+                            : null,
+                        ]}
+                      >
                         {category}
                       </Text>
                     </TouchableOpacity>
@@ -516,10 +554,7 @@ export default function TimerScreen(): JSX.Element {
               </View>
             </ScrollView>
 
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={addReminder}
-            >
+            <TouchableOpacity style={styles.saveButton} onPress={addReminder}>
               <Text style={styles.saveButtonText}>Tạo nhắc nhở</Text>
             </TouchableOpacity>
           </View>
@@ -533,7 +568,9 @@ export default function TimerScreen(): JSX.Element {
       <View style={styles.header}>
         <Text style={styles.title}>Lịch học tiếng Anh</Text>
         <Image
-          source={{ uri: 'https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg' }}
+          source={{
+            uri: "https://d35aaqx5ub95lt.cloudfront.net/images/owls/speaking.svg",
+          }}
           style={styles.mascot}
         />
       </View>
@@ -623,72 +660,72 @@ interface StylesProps {
 const styles = StyleSheet.create<StylesProps>({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
-    paddingTop: Platform.OS === 'ios' ? 60 : 30,
+    backgroundColor: "#F9F9F9",
+    paddingTop: Platform.OS === "ios" ? 60 : 30,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     marginBottom: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1CB0F6',
+    fontWeight: "bold",
+    color: "#1CB0F6",
   },
   mascot: {
     width: 60,
     height: 60,
   },
   streakContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     margin: 16,
     marginTop: 0,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   streakInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   streakText: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginLeft: 8,
   },
   streakLabel: {
     fontSize: 16,
-    color: '#777',
+    color: "#777",
     marginLeft: 4,
   },
   completeButton: {
-    backgroundColor: '#58CC02',
+    backgroundColor: "#58CC02",
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
   },
   completeButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
   weeklyProgress: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
     margin: 16,
     marginTop: 0,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -696,36 +733,36 @@ const styles = StyleSheet.create<StylesProps>({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 16,
   },
   progressContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     height: 120,
     marginTop: 10,
   },
   progressDay: {
-    alignItems: 'center',
-    width: '13%',
+    alignItems: "center",
+    width: "13%",
   },
   progressBarContainer: {
     height: 100,
     width: 10,
-    backgroundColor: '#E5E5EA',
+    backgroundColor: "#E5E5EA",
     borderRadius: 5,
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
+    overflow: "hidden",
+    justifyContent: "flex-end",
   },
   progressBar: {
-    width: '100%',
-    backgroundColor: '#1CB0F6',
+    width: "100%",
+    backgroundColor: "#1CB0F6",
     borderRadius: 5,
   },
   progressDayText: {
     fontSize: 12,
-    color: '#777',
+    color: "#777",
     marginTop: 6,
   },
   remindersSection: {
@@ -739,8 +776,8 @@ const styles = StyleSheet.create<StylesProps>({
     paddingBottom: 100,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
     marginTop: 40,
   },
@@ -750,20 +787,20 @@ const styles = StyleSheet.create<StylesProps>({
     marginBottom: 20,
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
-    color: '#777',
+    color: "#777",
     lineHeight: 22,
   },
   reminderItem: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: '#000',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -773,69 +810,69 @@ const styles = StyleSheet.create<StylesProps>({
     flex: 1,
   },
   reminderTimeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   reminderTime: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginLeft: 8,
   },
   reminderDetails: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
   },
   categoryTag: {
-    backgroundColor: '#1CB0F6',
+    backgroundColor: "#1CB0F6",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
     marginRight: 20,
-    marginBottom: 10
+    marginBottom: 10,
   },
   categoryText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   daysContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   dayIndicator: {
     fontSize: 12,
-    color: '#777',
+    color: "#777",
     marginRight: 4,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: "#F2F2F7",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 4,
   },
   reminderActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   deleteButton: {
     padding: 8,
     marginLeft: 12,
   },
   addButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 90,
     right: 24,
-    backgroundColor: '#58CC02',
+    backgroundColor: "#58CC02",
     width: 60,
     height: 60,
     borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -843,28 +880,28 @@ const styles = StyleSheet.create<StylesProps>({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 20,
     paddingHorizontal: 16,
-    maxHeight: '80%',
+    maxHeight: "80%",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
     paddingHorizontal: 4,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   modalScroll: {
     marginBottom: 20,
@@ -874,14 +911,14 @@ const styles = StyleSheet.create<StylesProps>({
   },
   fieldLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 12,
   },
   timePickerButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F2F2F7',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F2F2F7",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 10,
@@ -889,71 +926,71 @@ const styles = StyleSheet.create<StylesProps>({
   timePickerText: {
     fontSize: 18,
     marginLeft: 8,
-    color: '#333',
+    color: "#333",
   },
   daysSelection: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 8,
   },
   dayBadge: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#F2F2F7",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 10,
     marginBottom: 10,
   },
   dayBadgeSelected: {
-    backgroundColor: '#58CC02',
+    backgroundColor: "#58CC02",
   },
   dayBadgeText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#777',
+    fontWeight: "600",
+    color: "#777",
   },
   dayBadgeTextSelected: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   daysSelected: {
     fontSize: 14,
-    color: '#777',
+    color: "#777",
     marginTop: 4,
   },
   categoriesContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
   },
   categoryBadge: {
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: "#F2F2F7",
     marginRight: 10,
   },
   categorySelected: {
-    backgroundColor: '#1CB0F6',
+    backgroundColor: "#1CB0F6",
   },
   categoryBadgeText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#777',
+    fontWeight: "600",
+    color: "#777",
   },
   categorySelectedText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   saveButton: {
-    backgroundColor: '#58CC02',
+    backgroundColor: "#58CC02",
     borderRadius: 12,
     paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   saveButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: 'bold',
-  }
+    fontWeight: "bold",
+  },
 });

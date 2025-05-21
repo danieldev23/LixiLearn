@@ -29,31 +29,32 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Từ vựng",
-          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/vocab.png')} style={{width: 28, height: 28}} />,
+          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/vocab.png')} style={{ width: 28, height: 28 }} />,
         }}
       />
-       <Tabs.Screen
+      <Tabs.Screen
         name="grammar"
         options={{
           title: "Ngữ pháp",
-          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/grammar.png')} style={{width: 28, height: 28}} />,
+          tabBarIcon: () => <Image source={require('@/assets/images/tabbar/grammar.png')} style={{ width: 28, height: 28 }} />,
         }}
       />
-        <Tabs.Screen
+      <Tabs.Screen
         name="timer"
         options={{
           title: "Hẹn giờ",
-          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/streak.png')} style={{width: 28, height: 28}} />,
+          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/streak.png')} style={{ width: 28, height: 28 }} />,
         }}
       />
-      
+
       <Tabs.Screen
         name="chat"
         options={{
           title: "Lixi AI",
-          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/bot.png')} style={{width: 28, height: 28}} />,
+          tabBarIcon: ({ color }) => <Image source={require('@/assets/images/tabbar/bot.png')} style={{ width: 28, height: 28 }} />,
         }}
       />
+
     </Tabs>
   );
 }

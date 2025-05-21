@@ -8,21 +8,6 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "sounds": ["/Users/macbook/Documents/Projects/ReactNative/LixiLearn/assets/audio/1.wav"]
-        }
-      ],
-      [
-        "expo-ads-admob",
-        {
-          "applicationId": "ca-app-pub-8307719942892591~8558622618"
-        }
-      ]
-
-    ],
     "ios": {
       "supportsTablet": true
     },
